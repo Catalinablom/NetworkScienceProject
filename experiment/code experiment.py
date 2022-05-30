@@ -17,7 +17,7 @@ import copy
 def LFR(n, t1, t2, mu, mincomsize, maxcomsize): #t1, t2 >1, 0<=mu<=1
     return nx.LFR_benchmark_graph(n, t1, t2, mu,min_degree=1 ,min_community = mincomsize, max_community = maxcomsize)
 
-G = LFR(20, 2.5, 2.5, 0.3, 2, 7)
+G = LFR(20, 2.5, 2.5, 0.3,3, 7)
 nx.draw(G)
 communities = {frozenset(G.nodes[v]["community"]) for v in G}
 print(communities)
@@ -37,11 +37,7 @@ def Louvain_modularity(G):
     
     
     #create dic which keeps track of key: node, value: position of community it belongs to
-    num_communities = len(communities)
-    com_dic = {}
-    for i in range(num_communities):
-        for node in communities[i]:
-            com_dic[node]=i
+    com_dic = generate_com_dic(communities)
     
     #step 2
     improvement = True
@@ -76,11 +72,7 @@ def Louvain_modularity(G):
                 communities[best_option].add(node)
                 
                 #create dic which keeps track of key: node, value: position of community it belongs to
-                num_communities = len(communities)
-                com_dic = {}
-                for i in range(num_communities):
-                    for node in communities[i]:
-                        com_dic[node]=i
+                com_dic = generate_com_dic(communities)
         
             if max_diff_M == 0 :
                 test.append(False)
@@ -89,19 +81,57 @@ def Louvain_modularity(G):
                 
         improvement = any(test)
         
-    return communities
+    return communities, com_dic
 
-print(Louvain_modularity(G))
+def generate_com_dic(communities):
+    num_communities = len(communities)
+    com_dic = {}
+    for i in range(num_communities):
+        for node in communities[i]:
+            com_dic[node]=i
+            
+    return com_dic
+    
+found_communities= Louvain_modularity(G)
+print("found ",found_communities)
+print("ground ",communities)
+
+def induced_graph(com_dic, graph):
+    "inspiration from https://github.com/taynaud/python-louvain/blob/master/community/community_louvain.py"
+    
+    ret = nx.Graph()
+    ret.add_nodes_from(com_dic.values())
+
+    for node1, node2 in graph.edges():
+        com1 = com_dic[node1]
+        com2 = com_dic[node2]
+        ret.add_edge(com1, com2)
+
+    return ret
+
+
+
+
+def compress_communities_to_nodes(G,communities):
+    
+    
+    return G
 
     
 def communities_to_vector(G,communities):
     t = [0]*G.number_of_nodes() 
     for community in range(len(communities)):
-        for node in communities[community]:
+        for node in list(communities)[community]:
             t[node] = community
     return t
             
-print(communities_to_vector(G, communities))
+found_vector = communities_to_vector(G, found_communities)
+ground_vector = communities_to_vector(G, communities)
+
+print(norm_mutual_inf(found_vector,ground_vector))
+
+
+
     
 # # implement Louvain for map equation
 # def Louvain_map_eq(G): # minimize map equation instead of maximize modularity
