@@ -6,6 +6,7 @@ Created on Mon May 23 13:39:44 2022
 """
 
 from ast import Or
+from normalized_mutual_information import *
 import networkx as nx
 import networkx.algorithms.community as nx_comm
 import copy
@@ -92,6 +93,15 @@ def Louvain_modularity(G):
 
 print(Louvain_modularity(G))
 
+    
+def communities_to_vector(G,communities):
+    t = [0]*G.number_of_nodes() 
+    for community in range(len(communities)):
+        for node in communities[community]:
+            t[node] = community
+    return t
+            
+print(communities_to_vector(G, communities))
     
 # # implement Louvain for map equation
 # def Louvain_map_eq(G): # minimize map equation instead of maximize modularity
