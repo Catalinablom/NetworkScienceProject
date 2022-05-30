@@ -54,6 +54,8 @@ def Ha(t): #H(t)
             som += (Pe(t,i) * math.log(Pe(t,i),2)) 
     return -1*som
 
+
+#Compares found solution to ground truth (between -0.5 and 1, where higher is better)
 def norm_mutual_inf(t, g): 
     # t is vector with t_i community of node i in ground truth
     # g is vector with g_i community of node i by algorithm
