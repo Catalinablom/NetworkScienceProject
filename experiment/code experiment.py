@@ -110,6 +110,19 @@ def induced_graph(com_dic, graph):
         ret.add_edge(com1, com2)
 
     return ret
+
+def Louvain_mod(G):
+    improvement =1
+    previous_mod= modularity(G, communities)
+    while improvement > 0:
+        #run first round
+        communities, com_dic = Louvain_modularity_firstround(G)
+        
+        #calculate new modularity
+        
+        improvement = 3
+        G = induced_graph(com_dic,G)
+    
     
 def communities_to_vector(G,communities):
     t = [0]*G.number_of_nodes() 
