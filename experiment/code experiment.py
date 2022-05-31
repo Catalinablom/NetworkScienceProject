@@ -30,7 +30,7 @@ def modularity(G, communities):
 # Implement Louvain for modularity, je moet louvain wel zelf implementeren, anders kun je geen andere objective functie hebben
 # Je wil modularity niet de functie pakken altijd, soms moet je alleen delta M hebben als je één node of één community verplaatst, dan is heel M uitrekenen veel langzamer dan delta M
 
-def Louvain_modularity(G):
+def Louvain_modularity_firstround(G):
     
     #step 1 : initliaze communities and modularity
     communities = [{i} for i in range(G.number_of_nodes())]
@@ -83,6 +83,7 @@ def Louvain_modularity(G):
         
     return communities, com_dic
 
+#generates dictionary with key : node, value: community it belongs to
 def generate_com_dic(communities):
     num_communities = len(communities)
     com_dic = {}
@@ -92,10 +93,11 @@ def generate_com_dic(communities):
             
     return com_dic
     
-found_communities= Louvain_modularity(G)
+found_communities= Louvain_modularity_firstround(G)
 print("found ",found_communities)
 print("ground ",communities)
 
+#compresses each community into one node
 def induced_graph(com_dic, graph):
     "inspiration from https://github.com/taynaud/python-louvain/blob/master/community/community_louvain.py"
     
@@ -108,15 +110,6 @@ def induced_graph(com_dic, graph):
         ret.add_edge(com1, com2)
 
     return ret
-
-
-
-
-def compress_communities_to_nodes(G,communities):
-    
-    
-    return G
-
     
 def communities_to_vector(G,communities):
     t = [0]*G.number_of_nodes() 
