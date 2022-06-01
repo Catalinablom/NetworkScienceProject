@@ -79,6 +79,8 @@ def calculate_HQ(communities, q):
     def fraction(q, i):
         teller = q[i]
         noemer = sum(q)
+        if noemer == 0 :
+            return 0
         return teller / noemer
     
     result = 0
@@ -96,8 +98,11 @@ def calculate_HPi(communities, q, p, i):
     p_sum = 0
     for b in list(communities)[i]:
         p_sum += p[b]
-
-    fraction1 = q[i]/(q[i]+p_sum)
+    if (q[i]+p_sum) == 0:
+        fraction1 = 0
+    else:
+        fraction1 = q[i]/(q[i]+p_sum)
+    
     if fraction1 == 0:
         result = 0
     else:
