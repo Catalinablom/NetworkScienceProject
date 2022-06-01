@@ -8,7 +8,9 @@ Created on Tue May 31 14:26:01 2022
 import networkx as nx
 import math
 import numpy as np
+import sklearn
 from sklearn.preprocessing import normalize
+
 
 
 def p_arrow(communities, p, i): # p_arrow as in paper, without the q term
