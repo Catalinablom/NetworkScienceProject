@@ -12,6 +12,7 @@ import networkx as nx
 import networkx.algorithms.community as nx_comm
 import copy
 import community as community_louvain
+import random
 
 # https://networkx.org/documentation/stable/reference/generated/networkx.generators.community.LFR_benchmark_graph.html
 # exactly one of min_degree or average_degree must be specified.
@@ -19,10 +20,8 @@ import community as community_louvain
 def LFR(n, t1, t2, mu, mincomsize, maxcomsize): #t1, t2 >1, 0<=mu<=1
     return nx.LFR_benchmark_graph(n, t1, t2, mu,min_degree=1 ,min_community = mincomsize, max_community = maxcomsize)
 
-G = LFR(40, 2.5, 2.5, 0.3,3, 7)
-nx.draw(G)
-communities = {frozenset(G.nodes[v]["community"]) for v in G}
-print(communities) 
+
+# print(communities) 
 
 # https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.community.quality.modularity.html
 #communities in shape [{0, 1, 2}, {3, 4, 5}]
@@ -53,9 +52,13 @@ def Louvain_modularity_firstround(original_G, G, communities, com_dic):
     #step 2
     improvement = True
     while improvement:
-        print("hier")
+        # print("hier")
         test = []
-        for node in list(G.nodes()):
+        
+        #shuffle node list
+        nodes = list(G.nodes())
+        random.shuffle(nodes)
+        for node in nodes:
             
             max_diff_M = 0
             # M = modularity(G,communities)
@@ -78,7 +81,7 @@ def Louvain_modularity_firstround(original_G, G, communities, com_dic):
               
             
             if max_diff_M >0:  
-                print("max_diff_M", max_diff_M)      
+                # print("max_diff_M", max_diff_M)      
                 # #move node to best option
                 # communities[current_community].remove(node)
                 # communities[best_option].add(node)
@@ -172,16 +175,25 @@ def communities_to_vector(G,communities):
             t[node] = community
     return t
 
+
+
+
+G = LFR(1000, 2.5, 2.5, 0.2,30, 100)
+nx.draw(G)
+communities = {frozenset(G.nodes[v]["community"]) for v in G}
+
 found_communities, _= Louvain_mod(G)
-real_found_communities = partition = community_louvain.best_partition(G)
-print("found ",found_communities)
-print("ground ",communities)
-print("real_found_communities", real_found_communities)
+real_found_communities = nx_comm.louvain_communities(G)
+# print("found ",found_communities)
+# print("ground ",communities)
+# print("real_found_communities", real_found_communities)
             
 found_vector = communities_to_vector(G, found_communities)
 ground_vector = communities_to_vector(G, communities)
+real_found_vector = communities_to_vector(G, real_found_communities)
 
 print(norm_mutual_inf(found_vector,ground_vector))
+print(norm_mutual_inf(real_found_vector,ground_vector))
 
 
 

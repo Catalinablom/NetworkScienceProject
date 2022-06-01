@@ -18,6 +18,7 @@ graph = LFR(10, 2.5, 2.5, 0.3,3, 10)
 communities = {frozenset(graph.nodes[v]["community"]) for v in graph}
 
 
+
 def p_arrow(communities, p, i): # p_arrow as in paper, without the q term
     result = 0
     for node in list(communities)[i]:
