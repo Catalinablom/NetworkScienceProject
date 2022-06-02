@@ -21,6 +21,8 @@ communities = {frozenset(graph.nodes[v]["community"]) for v in graph}
 
 def p_arrow(communities, p, i): # p_arrow as in paper, without the q term
     result = 0
+    if len(list(communities)[i])==0:
+            return 0
     for node in list(communities)[i]:
         result += p[node]
     return result
@@ -66,7 +68,7 @@ def calculate_p(graph):
     for i in range(100): 
         previous = p
         p = np.matmul(A,p)        
-        if np.allclose(previous,p, rtol = (1.e-5)/n): #moet deze error tolerance kleiner?
+        if np.allclose(previous,p, rtol = (1.e-5)/n): 
             return p.flatten().tolist()
     
     return p.flatten().tolist()
@@ -98,6 +100,7 @@ def calculate_HPi(communities, q, p, i):
     p_sum = 0
     for b in list(communities)[i]:
         p_sum += p[b]
+        
     if (q[i]+p_sum) == 0:
         fraction1 = 0
     else:
@@ -109,7 +112,11 @@ def calculate_HPi(communities, q, p, i):
         result = -1*fraction1*math.log(fraction1,2)
     
     for node in list(communities)[i]:
-        a = p[node]/(q[i]+p_sum)
+        if q[i]+p_sum == 0:
+            a = 0
+        else:
+            a = p[node]/(q[i]+p_sum)
+        
         if a == 0:
             result -= 0
         else:
@@ -130,5 +137,40 @@ def map_equation(graph, communities, p):
     return result
         
         
-print('mapeq:', map_equation(graph, communities, p))
+print('mapeq1:', map_equation(graph, communities, p))
 # print*map_equation(graph,communities,p)
+
+
+'Tweede manier voor map_eq, equation (4) uit paper'
+
+def a_log_a(a):
+    if a == 0:
+        return 0
+    else:
+        return a*math.log(a,2)
+    
+def L(graph, communities, p):
+    q = calculate_q(graph, communities, p)
+    print(communities)
+    print(q)
+    result = a_log_a(sum(q))
+    
+    term = 0
+    for i in range(len(communities)):
+        term += a_log_a(q[i])
+    result = result - 2*term
+    
+    term2 = 0
+    for alpha in range(graph.number_of_nodes()):
+        term2 += a_log_a(p[alpha])
+    result = result - term2
+    
+    term3 = 0
+    for i in range(len(communities)):
+        a = q[i]+ p_arrow(communities, p, i)
+        term3 += a_log_a(a)
+    result = result + term3
+    
+    return result
+        
+print('mapeq2:', L(graph, communities, p))
