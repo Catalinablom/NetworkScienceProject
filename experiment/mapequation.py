@@ -14,7 +14,7 @@ from sklearn.preprocessing import normalize
 def LFR(n, t1, t2, mu, mincomsize, maxcomsize): #t1, t2 >1, 0<=mu<=1
     return nx.LFR_benchmark_graph(n, t1, t2, mu,min_degree=1 ,min_community = mincomsize, max_community = maxcomsize)
 
-graph = LFR(10, 2.5, 2.5, 0.3,3, 10)
+graph = LFR(50, 2.5, 2.5, 0.3,10, 25)
 communities = {frozenset(graph.nodes[v]["community"]) for v in graph}
 
 
@@ -78,16 +78,17 @@ def calculate_p(graph):
 
 def calculate_HQ(communities, q):
     
-    def fraction(q, i):
+    def fraction12(q, i):
         teller = q[i]
         noemer = sum(q)
         if noemer == 0 :
             return 0
         return teller / noemer
     
+    
     result = 0
     for i in range(len(communities)):
-        a = fraction(q, i)
+        a = fraction12(q, i)
         if a == 0:
             result += 0
         else:
@@ -97,10 +98,8 @@ def calculate_HQ(communities, q):
 
 def calculate_HPi(communities, q, p, i):
     
-    p_sum = 0
-    for b in list(communities)[i]:
-        p_sum += p[b]
-        
+    p_sum = p_arrow(communities,p,  i)
+
     if (q[i]+p_sum) == 0:
         fraction1 = 0
     else:
@@ -118,15 +117,15 @@ def calculate_HPi(communities, q, p, i):
             a = p[node]/(q[i]+p_sum)
         
         if a == 0:
-            result -= 0
+            result = result
         else:
-            result -= a*math.log(a,2)
+            result = result - a*math.log(a,2)
         
     return result
 
 p = calculate_p(graph) # p wil je maar een keer berekenen, die is voor elke keuze van communities hetzelfde, en kost veel tijd
 
-def map_equation(graph, communities, p):
+def map_equation1(graph, communities, p):
     q = calculate_q(graph, communities, p)
     HQ = calculate_HQ(communities, q)
     result = sum(q)*HQ
@@ -137,7 +136,7 @@ def map_equation(graph, communities, p):
     return result
         
         
-print('mapeq1:', map_equation(graph, communities, p))
+print('mapeq1:', map_equation1(graph, communities, p))
 # print*map_equation(graph,communities,p)
 
 
@@ -149,7 +148,7 @@ def a_log_a(a):
     else:
         return a*math.log(a,2)
     
-def L(graph, communities, p):
+def map_equation2(graph, communities, p):
     q = calculate_q(graph, communities, p)
     print(communities)
     print(q)
@@ -172,5 +171,8 @@ def L(graph, communities, p):
     result = result + term3
     
     return result
-        
-print('mapeq2:', L(graph, communities, p))
+
+# L geeft een hogere waarde, heeft met q te maken. Als sum(q) hoger is dan is L ook hoger tov map_eq
+# als sum(q) bijna 0, dan geven ze bijna dezelfde waarde, en als sum(q)=0 dan zijn ze gelijk
+
+print('mapeq2:', map_equation2(graph, communities, p))
