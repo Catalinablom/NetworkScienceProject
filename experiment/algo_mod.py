@@ -178,22 +178,22 @@ def communities_to_vector(G,communities):
 
 
 
-G = LFR(1000, 2.5, 2.5, 0.2,30, 100)
-nx.draw(G)
-communities = {frozenset(G.nodes[v]["community"]) for v in G}
+# G = LFR(1000, 2.5, 2.5, 0.2,30, 100)
+# nx.draw(G)
+# communities = {frozenset(G.nodes[v]["community"]) for v in G}
 
-found_communities, _= Louvain_mod(G)
-real_found_communities = nx_comm.louvain_communities(G)
-# print("found ",found_communities)
-# print("ground ",communities)
-# print("real_found_communities", real_found_communities)
+# found_communities, _= Louvain_mod(G)
+# real_found_communities = nx_comm.louvain_communities(G)
+# # print("found ",found_communities)
+# # print("ground ",communities)
+# # print("real_found_communities", real_found_communities)
             
-found_vector = communities_to_vector(G, found_communities)
-ground_vector = communities_to_vector(G, communities)
-real_found_vector = communities_to_vector(G, real_found_communities)
+# found_vector = communities_to_vector(G, found_communities)
+# ground_vector = communities_to_vector(G, communities)
+# real_found_vector = communities_to_vector(G, real_found_communities)
 
-print(norm_mutual_inf(found_vector,ground_vector))
-print(norm_mutual_inf(real_found_vector,ground_vector))
+# print(norm_mutual_inf(found_vector,ground_vector))
+# print(norm_mutual_inf(real_found_vector,ground_vector))
 
 
 

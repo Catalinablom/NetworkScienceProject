@@ -2,11 +2,13 @@ from ast import Or
 # from selectors import EpollSelector
 from normalized_mutual_information import *
 from mapequation import *
+from algo_mod import *
 import networkx as nx
 import networkx.algorithms.community as nx_comm
 import copy
 #import community as community_louvain
 import random
+
 
 # https://networkx.org/documentation/stable/reference/generated/networkx.generators.community.LFR_benchmark_graph.html
 # exactly one of min_degree or average_degree must be specified.
@@ -18,10 +20,7 @@ def LFR(n, t1, t2, mu, mincomsize, maxcomsize): #t1, t2 >1, 0<=mu<=1
 #communities in shape [{0, 1, 2}, {3, 4, 5}]
 def modularity(G, communities):
     return nx_comm.modularity(G, communities)
-'''
-def map_equation(G, communities):
-    return 1
-'''
+
     
 # Implement Louvain for modularity, je moet louvain wel zelf implementeren, anders kun je geen andere objective functie hebben
 # Je wil modularity niet de functie pakken altijd, soms moet je alleen delta M hebben als je één node of één community verplaatst, dan is heel M uitrekenen veel langzamer dan delta M
@@ -48,7 +47,7 @@ def Louvain_map_firstround(original_G, G, communities, com_dic, p):
                     # #make new possible partition
                     new_communities = copy.deepcopy(communities)
                     new_communities[i].update(communities[node])
-                    new_communities[node]={}
+                    new_communities[node]=set()
 
                     #calculate modularity for new partition
                     new_map = map_equation(original_G,new_communities, p)
@@ -76,8 +75,11 @@ def Louvain_map_firstround(original_G, G, communities, com_dic, p):
                 # print("node", node)
                 if best_option != node:
                     
+                    # print("first",communities)
+                    # print(best_option, node)
                     communities[best_option].update(communities[node])
-                    communities[node]={}
+                    communities[node]=set()
+                    # print(communities)
                 
                 #print statemnt
                 # print("updated to \n", communities)
@@ -139,9 +141,9 @@ def Louvain_map(original_G, p):
         
         #calculate new modularity
         current_map = map_equation(original_G, communities, p)
-        improvement =  current_map - previous_mod 
+        improvement =  previous_map - current_map  #switch because we minimalize
         G = induced_graph(com_dic,G)
-        previous_mod = current_map
+        previous_map = current_map
     
     
     return communities, com_dic
@@ -159,23 +161,36 @@ def communities_to_vector(G,communities):
 
 
 
-G = LFR(1000, 2.5, 2.5, 0.2,30, 100)
-nx.draw(G)
+G = LFR(500, 2.5, 2.5, 0.1,50, 100)
+# nx.draw(G)
 communities = {frozenset(G.nodes[v]["community"]) for v in G}
 p = calculate_p(G)
+print("Graph has been created \n")
 
-found_communities, _= Louvain_map(G, p)
+found_communities_map, _= Louvain_map(G, p)
+found_communities_mod, _ = Louvain_mod(G)
+
+
 #real_found_communities = nx_comm.louvain_communities(G)
-print("found ",found_communities)
+print("found mod", found_communities_mod)
+print("found map",found_communities_map)
 print("ground ",communities)
 # print("real_found_communities", real_found_communities)
             
-found_vector = communities_to_vector(G, found_communities)
+found_vector_map = communities_to_vector(G, found_communities_map)
+found_vector_mod = communities_to_vector(G, found_communities_mod)
 ground_vector = communities_to_vector(G, communities)
 #real_found_vector = communities_to_vector(G, real_found_communities)
 
-print(norm_mutual_inf(found_vector,ground_vector))
-print(norm_mutual_inf(real_found_vector,ground_vector))
+print("map eq results", norm_mutual_inf(found_vector_map,ground_vector))
+print("modularity result",norm_mutual_inf(found_vector_mod,ground_vector))
+
+# print(norm_mutual_inf(real_found_vector,ground_vector))
+
+
+"Er gaat wel nog wat fout met dat hij probeert een volle set te verplaatsen naar een lege, dat zou niet mogelijk moeten zijn"
+
+
 
 
 

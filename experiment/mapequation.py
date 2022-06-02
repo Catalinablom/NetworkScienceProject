@@ -14,8 +14,8 @@ from sklearn.preprocessing import normalize
 def LFR(n, t1, t2, mu, mincomsize, maxcomsize): #t1, t2 >1, 0<=mu<=1
     return nx.LFR_benchmark_graph(n, t1, t2, mu,min_degree=1 ,min_community = mincomsize, max_community = maxcomsize)
 
-graph = LFR(10, 2.5, 2.5, 0.3,3, 10)
-communities = {frozenset(graph.nodes[v]["community"]) for v in graph}
+# graph = LFR(10, 2.5, 2.5, 0.3,3, 10)
+# communities = {frozenset(graph.nodes[v]["community"]) for v in graph}
 
 
 
@@ -124,7 +124,7 @@ def calculate_HPi(communities, q, p, i):
         
     return result
 
-p = calculate_p(graph) # p wil je maar een keer berekenen, die is voor elke keuze van communities hetzelfde, en kost veel tijd
+# p = calculate_p(graph) # p wil je maar een keer berekenen, die is voor elke keuze van communities hetzelfde, en kost veel tijd
 
 def map_equation(graph, communities, p):
     q = calculate_q(graph, communities, p)
@@ -137,7 +137,7 @@ def map_equation(graph, communities, p):
     return result
         
         
-print('mapeq1:', map_equation(graph, communities, p))
+# print('mapeq1:', map_equation(graph, communities, p))
 # print*map_equation(graph,communities,p)
 
 
@@ -151,8 +151,8 @@ def a_log_a(a):
     
 def L(graph, communities, p):
     q = calculate_q(graph, communities, p)
-    print(communities)
-    print(q)
+    # print(communities)
+    # print(q)
     result = a_log_a(sum(q))
     
     term = 0
@@ -173,4 +173,4 @@ def L(graph, communities, p):
     
     return result
         
-print('mapeq2:', L(graph, communities, p))
+# print('mapeq2:', L(graph, communities, p))

@@ -1,4 +1,5 @@
 # NetworkScienceProject
-Project network science
-hallo veerle!
-hallo cat
+TODO: 
+    - louvain werkend krijgen
+    - louvain checken
+    - met weights implementeren
