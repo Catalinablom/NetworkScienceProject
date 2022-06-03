@@ -174,8 +174,4 @@ def map_equation2(graph, communities, p):
 
 # L geeft een hogere waarde, heeft met q te maken. Als sum(q) hoger is dan is L ook hoger tov map_eq
 # als sum(q) bijna 0, dan geven ze bijna dezelfde waarde, en als sum(q)=0 dan zijn ze gelijk
-graph = LFR(50, 2.5, 2.5, 0.3,10, 25)
-communities = {frozenset(graph.nodes[v]["community"]) for v in graph}
-p = calculate_p(graph) # p wil je maar een keer berekenen, die is voor elke keuze van communities hetzelfde, en kost veel tijd
-print('mapeq1:', map_equation1(graph, communities, p))
-print('mapeq2:', map_equation2(graph, communities, p))
+# graph = LFR(50, 2.5, 2.5,u
