@@ -62,7 +62,9 @@ def Louvain_modularity_firstround(original_G, G, communities, com_dic):
             
             max_diff_M = 0
             # M = modularity(G,communities)
-            for i in G.neighbors(node):
+            neighbors = list(G.neighbors(node))
+            random.shuffle(neighbors)
+            for i in neighbors:
                 if node != i: #snap neit waarom ie denkt dat een node een neighbour van zichzelf is maar prima
                     
                     # #make new possible partition
@@ -86,6 +88,9 @@ def Louvain_modularity_firstround(original_G, G, communities, com_dic):
                 # communities[current_community].remove(node)
                 # communities[best_option].add(node)
                 
+                #update induced graph
+                nx.contracted_nodes(G, best_option, node, self_loops=False)
+                
                 #update dic which keeps track of key: node, value: position of community it belongs to
                 for j in communities[node]:
                     com_dic[j] = best_option
@@ -96,7 +101,7 @@ def Louvain_modularity_firstround(original_G, G, communities, com_dic):
                 if best_option != node:
                     
                     communities[best_option].update(communities[node])
-                    communities[node]={}
+                    communities[node]=set()
                 
                 #print statemnt
                 # print("updated to \n", communities)
@@ -140,7 +145,7 @@ def induced_graph(com_dic, graph):
     return ret
 
 def Louvain_mod(original_G):
-    G = original_G
+    G = copy.deepcopy(original_G)
     #step 1 : initliaze communities and modularity
     communities = [{i} for i in range(G.number_of_nodes())]
     
@@ -178,22 +183,22 @@ def communities_to_vector(G,communities):
 
 
 
-# G = LFR(1000, 2.5, 2.5, 0.2,30, 100)
+# G = LFR(100, 2.5, 2.5, 0.1, 10, 30)
 # nx.draw(G)
 # communities = {frozenset(G.nodes[v]["community"]) for v in G}
 
 # found_communities, _= Louvain_mod(G)
 # real_found_communities = nx_comm.louvain_communities(G)
-# # print("found ",found_communities)
+# print("found ",found_communities)
 # # print("ground ",communities)
-# # print("real_found_communities", real_found_communities)
+# print("real_found_communities", real_found_communities)
             
 # found_vector = communities_to_vector(G, found_communities)
 # ground_vector = communities_to_vector(G, communities)
 # real_found_vector = communities_to_vector(G, real_found_communities)
 
-# print(norm_mutual_inf(found_vector,ground_vector))
-# print(norm_mutual_inf(real_found_vector,ground_vector))
+# print("wij",norm_mutual_inf(found_vector,ground_vector))
+# print("zij",norm_mutual_inf(real_found_vector,ground_vector))
 
 
 

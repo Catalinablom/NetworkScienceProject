@@ -38,11 +38,14 @@ def Louvain_map_firstround(original_G, G, communities, com_dic, p):
         nodes = list(G.nodes())
         random.shuffle(nodes)
         for node in nodes:
-            current_map = map_equation(original_G,communities, p)
+            current_map = map_equation2(original_G,communities, p)
             max_diff_M = 0
-            # M = modularity(G,communities)
-            for i in G.neighbors(node):
-                if node != i: #snap neit waarom ie denkt dat een node een neighbour van zichzelf is maar prima
+            neighbors = list(G.neighbors(node))
+            random.shuffle(neighbors)
+            for i in neighbors:
+                if node != i and len(communities[i])==0: #snap neit waarom ie denkt dat een node een neighbour van zichzelf is maar prima
+                    if len(communities[i])==0:
+                        print("eerste fout")
                     
                     # #make new possible partition
                     new_communities = copy.deepcopy(communities)
@@ -50,7 +53,7 @@ def Louvain_map_firstround(original_G, G, communities, com_dic, p):
                     new_communities[node]=set()
 
                     #calculate modularity for new partition
-                    new_map = map_equation(original_G,new_communities, p)
+                    new_map = map_equation2(original_G,new_communities, p)
                     diff_map =  current_map - new_map 
                     
                     #save option that gives highest increase in modularity
@@ -66,6 +69,11 @@ def Louvain_map_firstround(original_G, G, communities, com_dic, p):
                 # communities[current_community].remove(node)
                 # communities[best_option].add(node)
                 
+                #update edges in graph 
+                nx.contracted_nodes(G, best_option, node, self_loops=False)
+                #update induced graph by removing the now empty community
+                
+                
                 #update dic which keeps track of key: node, value: position of community it belongs to
                 for j in communities[node]:
                     com_dic[j] = best_option
@@ -73,12 +81,14 @@ def Louvain_map_firstround(original_G, G, communities, com_dic, p):
                 #move nodes to best option community
                 # print("best option", best_option)
                 # print("node", node)
-                if best_option != node:
+
                     
                     # print("first",communities)
                     # print(best_option, node)
-                    communities[best_option].update(communities[node])
-                    communities[node]=set()
+                if len(communities[best_option])==0:
+                    print("\n\n FOUT")
+                communities[best_option].update(communities[node])
+                communities[node]=set()
                     # print(communities)
                 
                 #print statemnt
@@ -123,7 +133,7 @@ def induced_graph(com_dic, graph):
     return ret
 
 def Louvain_map(original_G, p):
-    G = original_G
+    G = copy.deepcopy(original_G)
     #step 1 : initliaze communities and modularity
     communities = [{i} for i in range(G.number_of_nodes())]
     
@@ -134,13 +144,13 @@ def Louvain_map(original_G, p):
     
     
     improvement =1
-    previous_map= map_equation(G, communities, p)
+    previous_map= map_equation2(G, communities, p)
     while improvement > 0:
         #run first round
         communities, com_dic = Louvain_map_firstround(original_G,G, communities, com_dic, p)
         
         #calculate new modularity
-        current_map = map_equation(original_G, communities, p)
+        current_map = map_equation2(original_G, communities, p)
         improvement =  previous_map - current_map  #switch because we minimalize
         G = induced_graph(com_dic,G)
         previous_map = current_map
@@ -161,7 +171,7 @@ def communities_to_vector(G,communities):
 
 
 
-G = LFR(500, 2.5, 2.5, 0.1,50, 100)
+G = LFR(100, 2.5, 2.5, 0.1,20, 30)
 # nx.draw(G)
 communities = {frozenset(G.nodes[v]["community"]) for v in G}
 p = calculate_p(G)
@@ -180,15 +190,14 @@ print("ground ",communities)
 found_vector_map = communities_to_vector(G, found_communities_map)
 found_vector_mod = communities_to_vector(G, found_communities_mod)
 ground_vector = communities_to_vector(G, communities)
-#real_found_vector = communities_to_vector(G, real_found_communities)
+# real_found_vector = communities_to_vector(G, real_found_communities)
 
 print("map eq results", norm_mutual_inf(found_vector_map,ground_vector))
 print("modularity result",norm_mutual_inf(found_vector_mod,ground_vector))
-
 # print(norm_mutual_inf(real_found_vector,ground_vector))
 
 
-"Er gaat wel nog wat fout met dat hij probeert een volle set te verplaatsen naar een lege, dat zou niet mogelijk moeten zijn"
+# "Er gaat wel nog wat fout met dat hij probeert een volle set te verplaatsen naar een lege, dat zou niet mogelijk moeten zijn"
 
 
 
