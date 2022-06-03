@@ -1,7 +1,7 @@
 from ast import Or
 # from selectors import EpollSelector
 from normalized_mutual_information import *
-from mapequation import *
+from mapequation1 import *
 from algo_mod import *
 import networkx as nx
 import networkx.algorithms.community as nx_comm
@@ -171,7 +171,7 @@ def communities_to_vector(G,communities):
 
 
 
-G = LFR(100, 2.5, 2.5, 0.1,10, 30)
+G = LFR(100, 2.5, 2.5, 0.2,10, 40)
 # nx.draw(G)
 communities = {frozenset(G.nodes[v]["community"]) for v in G}
 p = calculate_p(G)
@@ -186,6 +186,7 @@ print("found mod", found_communities_mod)
 print("found map",found_communities_map)
 print("ground ",communities)
 # print("real_found_communities", real_found_communities)
+
             
 found_vector_map = communities_to_vector(G, found_communities_map)
 found_vector_mod = communities_to_vector(G, found_communities_mod)

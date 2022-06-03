@@ -11,7 +11,7 @@ from normalized_mutual_information import *
 import networkx as nx
 import networkx.algorithms.community as nx_comm
 import copy
-import community as community_louvain
+#import community as community_louvain
 import random
 
 # https://networkx.org/documentation/stable/reference/generated/networkx.generators.community.LFR_benchmark_graph.html
@@ -183,52 +183,24 @@ def communities_to_vector(G,communities):
 
 
 
-G = LFR(100, 2.5, 2.5, 0.1, 10, 30)
-nx.draw(G)
-communities = {frozenset(G.nodes[v]["community"]) for v in G}
+# G = LFR(100, 2.5, 2.5, 0.1, 10, 30)
+# nx.draw(G)
+# communities = {frozenset(G.nodes[v]["community"]) for v in G}
 
-found_communities, _= Louvain_mod(G)
-real_found_communities = nx_comm.louvain_communities(G)
-print("found ",found_communities)
+# found_communities, _= Louvain_mod(G)
+# real_found_communities = nx_comm.louvain_communities(G)
+# print("found ",found_communities)
 # print("ground ",communities)
-print("real_found_communities", real_found_communities)
+# print("real_found_communities", real_found_communities)
             
-found_vector = communities_to_vector(G, found_communities)
-ground_vector = communities_to_vector(G, communities)
-real_found_vector = communities_to_vector(G, real_found_communities)
+# found_vector = communities_to_vector(G, found_communities)
+# ground_vector = communities_to_vector(G, communities)
+# real_found_vector = communities_to_vector(G, real_found_communities)
 
-print("wij",norm_mutual_inf(found_vector,ground_vector))
-print("zij",norm_mutual_inf(real_found_vector,ground_vector))
-
-
+# print("wij",norm_mutual_inf(found_vector,ground_vector))
+# print("zij",norm_mutual_inf(real_found_vector,ground_vector))
 
 
 
 
-
-
-
-
-
-
-
-    
-# # implement Louvain for map equation
-# def Louvain_map_eq(G): # minimize map equation instead of maximize modularity
-#     return
-
-# # implement map equation
-# def entropy(Q):
-#     return 
-# def p(g):
-#     return
-# def map_equation(G, communities): 
-#     q = #fraction of time that the random walk spends moving between communities 
-#     P_g = 
-#     H_Q = 
-#     H_P_g = 
-#     som = 0
-#     for g in communities:
-#         som = som + p(g)*entropy(P_g)
-#     return q * entropy(Q) + som
 

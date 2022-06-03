@@ -93,11 +93,8 @@ def calculate_p(graph):
     for i in range(100): 
         previous = p
         p = np.matmul(A,p)        
-        # if np.allclose(previous,p, rtol = (1.e-5)/n): 
-        #       p = normalize(p, axis=0, norm='l1')
-        #     return p.flatten().tolist()
-        
-    p = normalize(p, axis=0, norm='l1')
+        if np.allclose(previous,p, rtol = (1.e-5)/n): 
+            return p.flatten().tolist()
     
     return p.flatten().tolist()
 
@@ -158,7 +155,8 @@ def map_equation1(graph, communities, p):
     HQ = calculate_HQ(communities, q)
     result = sum(q)*HQ
     for i in range(len(communities)):
-        p_a = p_arrow(communities, p, i)
+        #p_a = p_arrow(communities, p, i)
+        p_a = p_arrow(communities, p, i)+q[i]
         HPi = calculate_HPi(communities, q, p, i)
         result += (p_a*HPi)
     return result
@@ -192,6 +190,7 @@ def map_equation2(graph, communities, p):
     term3 = 0
     for i in range(len(communities)):
         a = q[i]+ p_arrow(communities, p, i)
+        #a = p_arrow(communities, p, i)
         term3 += a_log_a(a)
 
     result += -2*term -term2 + term3
@@ -209,11 +208,13 @@ p = calculate_p(graph) # p wil je maar een keer berekenen, die is voor elke keuz
 
 
 print("som p", sum(p))
+'''
 q1 = calculate_q(graph,communities,p)
 print('Dit is q1:', q1)
 print('/n Som q:', sum(q1))
+'''
 q2 = calculate_q2(graph,communities,p)
-print('Dit is q1:', q2)
+print('Dit is q2:', q2)
 print('/n Som q:', sum(q2))
 
 #q2 = calculate_q2(graph,communities,p)
