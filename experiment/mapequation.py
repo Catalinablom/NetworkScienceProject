@@ -14,8 +14,7 @@ from sklearn.preprocessing import normalize
 def LFR(n, t1, t2, mu, mincomsize, maxcomsize): #t1, t2 >1, 0<=mu<=1
     return nx.LFR_benchmark_graph(n, t1, t2, mu,min_degree=1 ,min_community = mincomsize, max_community = maxcomsize)
 
-# graph = LFR(50, 2.5, 2.5, 0.3,10, 25)
-# communities = {frozenset(graph.nodes[v]["community"]) for v in graph}
+
 
 
 
@@ -43,10 +42,11 @@ def calculate_q(graph, communities, p):
                     edges_uit += 1
         result += (p[node]/p_arrow(communities, p, alpha))*(edges_uit / graph.degree(node))
         
-        return result
+        return p_arrow(communities, p, alpha) * result
     
     for i in range(len(communities)):
         qi = calculate_qi(i)
+        
         q.append(qi)    
     return q
 
@@ -123,7 +123,7 @@ def calculate_HPi(communities, q, p, i):
         
     return result
 
-# p = calculate_p(graph) # p wil je maar een keer berekenen, die is voor elke keuze van communities hetzelfde, en kost veel tijd
+
 
 def map_equation1(graph, communities, p):
     q = calculate_q(graph, communities, p)
@@ -136,7 +136,7 @@ def map_equation1(graph, communities, p):
     return result
         
         
-# print('mapeq1:', map_equation1(graph, communities, p))
+
 # print*map_equation(graph,communities,p)
 
 
@@ -174,5 +174,8 @@ def map_equation2(graph, communities, p):
 
 # L geeft een hogere waarde, heeft met q te maken. Als sum(q) hoger is dan is L ook hoger tov map_eq
 # als sum(q) bijna 0, dan geven ze bijna dezelfde waarde, en als sum(q)=0 dan zijn ze gelijk
-
-# print('mapeq2:', map_equation2(graph, communities, p))
+graph = LFR(50, 2.5, 2.5, 0.3,10, 25)
+communities = {frozenset(graph.nodes[v]["community"]) for v in graph}
+p = calculate_p(graph) # p wil je maar een keer berekenen, die is voor elke keuze van communities hetzelfde, en kost veel tijd
+print('mapeq1:', map_equation1(graph, communities, p))
+print('mapeq2:', map_equation2(graph, communities, p))
