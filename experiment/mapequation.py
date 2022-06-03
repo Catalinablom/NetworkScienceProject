@@ -44,10 +44,10 @@ def calculate_q(graph, communities, p):
         
         return p_arrow(communities, p, alpha) * result
     
-    # for i in range(len(communities)):
-    #     qi = calculate_qi(i)
-    #     q.append(qi)  
-    # print('Dit is q:', q)  
+    for i in range(len(communities)):
+        qi = calculate_qi(i)
+        q.append(qi)  
+    print('Dit is q:', q)  
     return q
 
 def calculate_q2(graph, communities, p): 
