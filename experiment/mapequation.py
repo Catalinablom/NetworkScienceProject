@@ -44,13 +44,36 @@ def calculate_q(graph, communities, p):
         
         return p_arrow(communities, p, alpha) * result
     
-    for i in range(len(communities)):
-        qi = calculate_qi(i)
-        
-        q.append(qi)    
+    # for i in range(len(communities)):
+    #     qi = calculate_qi(i)
+    #     q.append(qi)  
+    # print('Dit is q:', q)  
     return q
 
+def calculate_q2(graph, communities, p): 
+    'vector of probabilities to go out of a certain community'
+    q = []
+    # lengte is aantal communities
+    def calculate_qi(alpha):
+        if len(list(communities)[alpha])==0:
+            return 0
+        result = 0
+        edges_uit=0
+        degrees = 0
+        for node in list(communities)[alpha]:
+            degrees += graph.degree(node)
+            for neighbour in graph.neighbors(node):
+                if neighbour not in list(communities)[alpha]:
+                    edges_uit += 1
+        result = edges_uit / degrees
+        
+        return p_arrow(communities, p, alpha) * result
     
+    for i in range(len(communities)):
+        qi = calculate_qi(i)
+        q.append(qi)  
+    print('Dit is q:', q)  
+    return q   
 
 def calculate_p(graph): 
     'Vector p of probabilities to be in a certain node'
@@ -126,7 +149,7 @@ def calculate_HPi(communities, q, p, i):
 
 
 def map_equation1(graph, communities, p):
-    q = calculate_q(graph, communities, p)
+    q = calculate_q2(graph, communities, p)
     HQ = calculate_HQ(communities, q)
     result = sum(q)*HQ
     for i in range(len(communities)):
@@ -149,7 +172,7 @@ def a_log_a(a):
         return a*math.log(a,2)
     
 def map_equation2(graph, communities, p):
-    q = calculate_q(graph, communities, p)
+    q = calculate_q2(graph, communities, p)
     # print(communities)
     # print(q)
     result = a_log_a(sum(q))
@@ -174,4 +197,9 @@ def map_equation2(graph, communities, p):
 
 # L geeft een hogere waarde, heeft met q te maken. Als sum(q) hoger is dan is L ook hoger tov map_eq
 # als sum(q) bijna 0, dan geven ze bijna dezelfde waarde, en als sum(q)=0 dan zijn ze gelijk
-# graph = LFR(50, 2.5, 2.5,u
+graph = LFR(50, 2.5, 2.5, 0.3,10, 25)
+communities = {frozenset(graph.nodes[v]["community"]) for v in graph}
+print(communities)
+p = calculate_p(graph) # p wil je maar een keer berekenen, die is voor elke keuze van communities hetzelfde, en kost veel tijd
+print('mapeq1:', map_equation1(graph, communities, p))
+print('mapeq2:', map_equation2(graph, communities, p))
