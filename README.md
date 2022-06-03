@@ -8,3 +8,4 @@ TODO:
 
 Vragen:
     - moet louvain het net zo goed doen als de nx versie?
+    - Hoe berekenen we q?

@@ -173,7 +173,7 @@ def communities_to_vector(G,communities):
 
 G = LFR(100, 2.5, 2.5, 0.1,10, 30)
 # nx.draw(G)
-communities = {frozenset(G.nodes[v]["community"]) for v in G}
+communities = [frozenset(G.nodes[v]["community"]) for v in G]
 p = calculate_p(G)
 print("Graph has been created \n")
 
