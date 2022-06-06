@@ -11,7 +11,7 @@ from normalized_mutual_information import *
 import networkx as nx
 import networkx.algorithms.community as nx_comm
 import copy
-#import community as community_louvain
+import community as community_louvain
 import random
 
 # https://networkx.org/documentation/stable/reference/generated/networkx.generators.community.LFR_benchmark_graph.html

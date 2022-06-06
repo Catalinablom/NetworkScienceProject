@@ -38,14 +38,13 @@ def Louvain_map_firstround(original_G, G, communities, com_dic, p):
         nodes = list(G.nodes())
         random.shuffle(nodes)
         for node in nodes:
+            
             current_map = map_equation2(original_G,communities, p)
             max_diff_M = 0
             neighbors = list(G.neighbors(node))
             random.shuffle(neighbors)
             for i in neighbors:
-                if node != i and len(communities[i])==0: #snap neit waarom ie denkt dat een node een neighbour van zichzelf is maar prima
-                    if len(communities[i])==0:
-                        print("eerste fout")
+                if node != i: #snap neit waarom ie denkt dat een node een neighbour van zichzelf is maar prima
                     
                     # #make new possible partition
                     new_communities = copy.deepcopy(communities)
@@ -61,41 +60,24 @@ def Louvain_map_firstround(original_G, G, communities, com_dic, p):
                         best_option = i
                         max_diff_M = diff_map
                         
-              
             
-            if max_diff_M >0:  
-                # print("max_diff_M", max_diff_M)      
-                # #move node to best option
-                # communities[current_community].remove(node)
-                # communities[best_option].add(node)
+            if max_diff_M >0:
                 
-                #update edges in graph 
+                #update edges in graph by contracting the communities into one node
                 nx.contracted_nodes(G, best_option, node, self_loops=False)
-                #update induced graph by removing the now empty community
                 
                 
                 #update dic which keeps track of key: node, value: position of community it belongs to
                 for j in communities[node]:
                     com_dic[j] = best_option
-                
-                #move nodes to best option community
-                # print("best option", best_option)
-                # print("node", node)
-
                     
-                    # print("first",communities)
-                    # print(best_option, node)
-                if len(communities[best_option])==0:
-                    print("\n\n FOUT")
+                #update comunities list
                 communities[best_option].update(communities[node])
                 communities[node]=set()
-                    # print(communities)
                 
-                #print statemnt
-                # print("updated to \n", communities)
                 
         
-            if max_diff_M == 0 :
+            if max_diff_M == 0 : #if we imporove
                 test.append(False)
             else:
                 test.append(True)
@@ -114,7 +96,6 @@ def generate_com_dic(communities):
             
     return com_dic
     
-
 
 #compresses each community into one node
 def induced_graph(com_dic, graph):
@@ -137,11 +118,8 @@ def Louvain_map(original_G, p):
     #step 1 : initliaze communities and modularity
     communities = [{i} for i in range(G.number_of_nodes())]
     
-    
     #create dic which keeps track of key: node, value: position of community it belongs to
     com_dic = generate_com_dic(communities)
-    
-    
     
     improvement =1
     previous_map= map_equation2(G, communities, p)
@@ -171,31 +149,31 @@ def communities_to_vector(G,communities):
 
 
 
-G = LFR(500, 2.5, 1.5, 0.1, 25, 100)
-# nx.draw(G)
-communities = {frozenset(G.nodes[v]["community"]) for v in G}
-p = calculate_p(G)
-print("Graph has been created \n")
+# G = LFR(500, 2.5, 1.5, 0.1, 25, 100)
+# # nx.draw(G)
+# communities = {frozenset(G.nodes[v]["community"]) for v in G}
+# p = calculate_p(G)
+# print("Graph has been created \n")
 
-found_communities_map, _= Louvain_map(G, p)
-found_communities_mod, _ = Louvain_mod(G)
+# found_communities_map, _= Louvain_map(G, p)
+# found_communities_mod, _ = Louvain_mod(G)
 
 
-#real_found_communities = nx_comm.louvain_communities(G)
-print("found mod", found_communities_mod)
-print("found map",found_communities_map)
-print("ground ",communities)
-# print("real_found_communities", real_found_communities)
+# #real_found_communities = nx_comm.louvain_communities(G)
+# print("found mod", found_communities_mod)
+# print("found map",found_communities_map)
+# print("ground ",communities)
+# # print("real_found_communities", real_found_communities)
 
             
-found_vector_map = communities_to_vector(G, found_communities_map)
-found_vector_mod = communities_to_vector(G, found_communities_mod)
-ground_vector = communities_to_vector(G, communities)
-# real_found_vector = communities_to_vector(G, real_found_communities)
+# found_vector_map = communities_to_vector(G, found_communities_map)
+# found_vector_mod = communities_to_vector(G, found_communities_mod)
+# ground_vector = communities_to_vector(G, communities)
+# # real_found_vector = communities_to_vector(G, real_found_communities)
 
-print("map eq results", norm_mutual_inf(found_vector_map,ground_vector))
-print("modularity result",norm_mutual_inf(found_vector_mod,ground_vector))
-# print(norm_mutual_inf(real_found_vector,ground_vector))
+# print("map eq results", norm_mutual_inf(found_vector_map,ground_vector))
+# print("modularity result",norm_mutual_inf(found_vector_mod,ground_vector))
+# # print(norm_mutual_inf(real_found_vector,ground_vector))
 
 
 # "Er gaat wel nog wat fout met dat hij probeert een volle set te verplaatsen naar een lege, dat zou niet mogelijk moeten zijn"

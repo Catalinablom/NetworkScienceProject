@@ -2,23 +2,29 @@ from algo_map import *
 from algo_map import Louvain_map
 from algo_mod import *
 from algo_mod import Louvain_mod
-from mapequation import *
+from mapequation1 import *
+import random
+from normalized_mutual_information import *
+import networkx as nx
+import networkx.algorithms.community as nx_comm
+import copy
+import community as community_louvain
 import random
 
 
 
 
-def init(n,tau1,tau2,mu,min_community,max_community):
+def init():
     # random.seed(25)
     " We have to find a combination of parameter values that always is able to produce a graph"
-    G = nx.LFR_benchmark_graph(n, tau1, tau2, mu, average_degree= 20,max_degree = 50, min_community = min_community, max_community = max_community)
+    G = LFR(50, 2.5, 1.5, 0.1, 5, 10)
     # nx.draw(G)
     communities = {frozenset(G.nodes[v]["community"]) for v in G}
     p = calculate_p(G)
     return G, communities, p
 
 def main():
-    G, communities, p = init(n=1000, tau1=2.5, tau2=2.5, mu=0.1, min_community=20,max_community=100)
+    G, communities, p = init()
     print("Graph has been created \n")
 
     found_communities_map, _= Louvain_map(G, p)

@@ -99,7 +99,7 @@ def calculate_q2(graph, communities, p):
     for i in range(len(communities)):
         qi = calculate_qi(i)
         q.append(qi)  
-    print('\n\nDit is q2:', q)  
+    # print('\n\nDit is q2:', q)  
     return q   
 
 def calculate_p(graph): 
@@ -225,40 +225,40 @@ def map_equation2(graph, communities, p):
 
 
 #create own graph
-ret = nx.Graph()
-ret.add_nodes_from([0,1,2,3,4,5,6])
-ret.add_edge(0,1)
-ret.add_edge(1,5)
-ret.add_edge(1,4)
-ret.add_edge(2,3)
-ret.add_edge(2,6)
-ret.add_edge(2,5)
-ret.add_edge(4,5)
-ret.add_edge(5,6)
-# graph = ret
+# ret = nx.Graph()
+# ret.add_nodes_from([0,1,2,3,4,5,6])
+# ret.add_edge(0,1)
+# ret.add_edge(1,5)
+# ret.add_edge(1,4)
+# ret.add_edge(2,3)
+# ret.add_edge(2,6)
+# ret.add_edge(2,5)
+# ret.add_edge(4,5)
+# ret.add_edge(5,6)
+# # graph = ret
 
-communities = [{1,2,4,5},{3,6}]
-p = [1/7,1/7,1/7,1/7,1/7,1/7,1/7]
+# communities = [{1,2,4,5},{3,6}]
+# p = [1/7,1/7,1/7,1/7,1/7,1/7,1/7]
 
 
 
 
 # L geeft een hogere waarde, heeft met q te maken. Als sum(q) hoger is dan is L ook hoger tov map_eq
 # als sum(q) bijna 0, dan geven ze bijna dezelfde waarde, en als sum(q)=0 dan zijn ze gelijk
-graph = LFR(50, 2.5, 2.5, 0.3,10, 25)
-communities = list({frozenset(graph.nodes[v]["community"]) for v in graph})
-print(communities)
+# graph = LFR(50, 2.5, 2.5, 0.3,10, 25)
+# communities = list({frozenset(graph.nodes[v]["community"]) for v in graph})
 # print(communities)
-p = calculate_p(graph) # p wil je maar een keer berekenen, die is voor elke keuze van communities hetzelfde, en kost veel tijd
-for i in range(len(communities)):
-    print(communities[i])
-    print(p_arrow(communities, p, i))
-print("som p", sum(p))
+# # print(communities)
+# p = calculate_p(graph) # p wil je maar een keer berekenen, die is voor elke keuze van communities hetzelfde, en kost veel tijd
+# for i in range(len(communities)):
+#     print(communities[i])
+#     print(p_arrow(communities, p, i))
+# print("som p", sum(p))
 
-print("self loops", list(nx.selfloop_edges(graph)))
-q1 = calculate_q(graph,communities,p)
-print(sum(q1))
-q2 = calculate_q2(graph,communities,p)
-print(sum(q2))
+# print("self loops", list(nx.selfloop_edges(graph)))
+# q1 = calculate_q(graph,communities,p)
+# print(sum(q1))
+# q2 = calculate_q2(graph,communities,p)
+# print(sum(q2))
 # print('mapeq1:', map_equation1(graph, communities, p))
 # print('mapeq2:', map_equation2(graph, communities, p))
