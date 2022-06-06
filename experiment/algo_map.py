@@ -171,11 +171,7 @@ def communities_to_vector(G,communities):
 
 
 
-<<<<<<< Updated upstream
-G = LFR(100, 2.5, 2.5, 0.2,10, 40)
-=======
 G = LFR(500, 2.5, 1.5, 0.1, 25, 100)
->>>>>>> Stashed changes
 # nx.draw(G)
 communities = {frozenset(G.nodes[v]["community"]) for v in G}
 p = calculate_p(G)
