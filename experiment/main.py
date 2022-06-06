@@ -14,10 +14,11 @@ import random
 
 
 
+
 def init():
     # random.seed(25)
     " We have to find a combination of parameter values that always is able to produce a graph"
-    G = LFR(50, 2.5, 1.5, 0.1, 5, 10)
+    G = LFR(50, 2.5, 1.5, 0.2, 5, 20)
     # nx.draw(G)
     communities = {frozenset(G.nodes[v]["community"]) for v in G}
     p = calculate_p(G)
@@ -32,9 +33,13 @@ def main():
 
 
     #real_found_communities = nx_comm.louvain_communities(G)
-    print("found mod", found_communities_mod)
-    print("found map",found_communities_map)
-    print("ground ",communities)
+    print("\nfound mod")
+    print_communities(found_communities_mod)
+    print("\nfound map")
+    print_communities(found_communities_map)
+    print("\nground ")
+    print_communities(communities)
+    
     # print("real_found_communities", real_found_communities)
                 
     found_vector_map = communities_to_vector(G, found_communities_map)

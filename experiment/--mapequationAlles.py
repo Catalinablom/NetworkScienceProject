@@ -27,54 +27,29 @@ def p_arrow(communities, p, i): # p_arrow as in paper, without the q term
     return result
 
 
-# def calculate_q(graph, communities, p): 
-#     'vector of probabilities to go out of a certain community'
-#     q = []
-#     # lengte is aantal communities
-#     def calculate_qi(alpha):
-#         if len(list(communities[alpha]))==0:
-#             return 0
-#         result = 0
-#         current_com = list(communities[alpha])
-#         for node in list(communities[alpha]):
-#             edges_uit=0
-#             neighbours = list(graph.neighbors(node))
-#             for neighbour in neighbours: #zorgen dat er geen self loops zijn
-#                 if neighbour not in list(communities[alpha]):
-#                     edges_uit += 1
-#             a=(p[node])*(edges_uit / graph.degree(node))
-#             # print("erbij",a)
-#             kans_leave = edges_uit / graph.degree(node)
-#             result += (p[node])*(edges_uit / graph.degree(node))
-#         return result
-    
-#     for i in range(len(communities)):
-#         qi = calculate_qi(i)
-#         q.append(qi)  
-#     print('Dit is q:', q)  
-#     print(sum(q))
-#     return q
-
-def calculate_q(graph,communities,p):
-    q =[]
-    for i  in range(len(communities)):
-        
+def calculate_q(graph, communities, p): 
+    'vector of probabilities to go out of a certain community'
+    q = []
+    # lengte is aantal communities
+    def calculate_qi(alpha):
+        if len(list(communities[alpha]))==0:
+            return 0
         result = 0
-        community = list(communities[i])
-        prob_com = p_arrow(communities, p, i)
-        for node in community:
-            prob_node = p[node]/prob_com
-            edges_uit = 0
-            edges_tot = 0
+        for node in list(communities[alpha]):
+            edges_uit=0
             neighbours = list(graph.neighbors(node))
-            for neighbor in neighbours:
-                edges_tot +=1
-                if neighbor not in community:
-                    edges_uit+=1
-            result+= prob_node * (edges_uit /edges_tot)
-        q.append(prob_com*result)
-                
-            
+            for neighbour in neighbours: #zorgen dat er geen self loops zijn
+                if neighbour not in list(communities[alpha]):
+                    edges_uit += 1
+            result += (p[node])*(edges_uit / graph.degree[node])
+        return p_arrow(communities, p, alpha)*result
+        #return result
+    
+    for i in range(len(communities)):
+        qi = calculate_qi(i)
+        q.append(qi)  
+    #print('Dit is q:', q)  
+    #print('som q:',sum(q))
     return q
 
 def calculate_q2(graph, communities, p): 
@@ -88,8 +63,8 @@ def calculate_q2(graph, communities, p):
         edges_uit=0
         degrees = 0
         for node in list(communities)[alpha]:
-            degrees += graph.degree(node)
-            for neighbour in graph.neighbors(node):
+            degrees += graph.degree[node]
+            for neighbour in list(graph.neighbors(node)):
                 if neighbour not in list(communities)[alpha]:
                     edges_uit += 1
         result = edges_uit / degrees
@@ -99,7 +74,7 @@ def calculate_q2(graph, communities, p):
     for i in range(len(communities)):
         qi = calculate_qi(i)
         q.append(qi)  
-    # print('\n\nDit is q2:', q)  
+    #print('\n\nDit is q2:', q)  
     return q   
 
 def calculate_p(graph): 
@@ -118,11 +93,8 @@ def calculate_p(graph):
     for i in range(100): 
         previous = p
         p = np.matmul(A,p)        
-        # if np.allclose(previous,p, rtol = (1.e-5)/n): 
-        #       p = normalize(p, axis=0, norm='l1')
-        #     return p.flatten().tolist()
-        
-    p = normalize(p, axis=0, norm='l1')
+        if np.allclose(previous,p, rtol = (1.e-5)/n): 
+            return p.flatten().tolist()
     
     return p.flatten().tolist()
 
@@ -183,7 +155,8 @@ def map_equation1(graph, communities, p):
     HQ = calculate_HQ(communities, q)
     result = sum(q)*HQ
     for i in range(len(communities)):
-        p_a = p_arrow(communities, p, i)
+        #p_a = p_arrow(communities, p, i)
+        p_a = p_arrow(communities, p, i)+q[i]
         HPi = calculate_HPi(communities, q, p, i)
         result += (p_a*HPi)
     return result
@@ -202,7 +175,7 @@ def a_log_a(a):
         return a*math.log(a,2)
     
 def map_equation2(graph, communities, p):
-    q = calculate_q(graph, communities, p)
+    q = calculate_q2(graph, communities, p)
     # print(communities)
     result = a_log_a(sum(q))
     
@@ -211,54 +184,39 @@ def map_equation2(graph, communities, p):
         term += a_log_a(q[i])
     
     term2 = 0
-    for alpha in range(graph.number_of_nodes()):
+    for alpha in list(graph.nodes()):
         term2 += a_log_a(p[alpha])
     
     term3 = 0
     for i in range(len(communities)):
         a = q[i]+ p_arrow(communities, p, i)
+        #a = p_arrow(communities, p, i)
         term3 += a_log_a(a)
 
     result += -2*term -term2 + term3
     
     return result
 
-
-#create own graph
-# ret = nx.Graph()
-# ret.add_nodes_from([0,1,2,3,4,5,6])
-# ret.add_edge(0,1)
-# ret.add_edge(1,5)
-# ret.add_edge(1,4)
-# ret.add_edge(2,3)
-# ret.add_edge(2,6)
-# ret.add_edge(2,5)
-# ret.add_edge(4,5)
-# ret.add_edge(5,6)
-# # graph = ret
-
-# communities = [{1,2,4,5},{3,6}]
-# p = [1/7,1/7,1/7,1/7,1/7,1/7,1/7]
-
-
-
-
 # L geeft een hogere waarde, heeft met q te maken. Als sum(q) hoger is dan is L ook hoger tov map_eq
 # als sum(q) bijna 0, dan geven ze bijna dezelfde waarde, en als sum(q)=0 dan zijn ze gelijk
 # graph = LFR(50, 2.5, 2.5, 0.3,10, 25)
 # communities = list({frozenset(graph.nodes[v]["community"]) for v in graph})
-# print(communities)
 # # print(communities)
 # p = calculate_p(graph) # p wil je maar een keer berekenen, die is voor elke keuze van communities hetzelfde, en kost veel tijd
-# for i in range(len(communities)):
-#     print(communities[i])
-#     print(p_arrow(communities, p, i))
-# print("som p", sum(p))
 
-# print("self loops", list(nx.selfloop_edges(graph)))
+# # print("\n\n compprob",comprob)
+
+
+# print("som p", sum(p))
+# '''
 # q1 = calculate_q(graph,communities,p)
-# print(sum(q1))
+# print('Dit is q1:', q1)
+# print('/n Som q:', sum(q1))
+# '''
 # q2 = calculate_q2(graph,communities,p)
-# print(sum(q2))
+# print('Dit is q2:', q2)
+# print('/n Som q:', sum(q2))
+
+# #q2 = calculate_q2(graph,communities,p)
 # print('mapeq1:', map_equation1(graph, communities, p))
 # print('mapeq2:', map_equation2(graph, communities, p))

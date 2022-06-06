@@ -146,6 +146,13 @@ def communities_to_vector(G,communities):
             t[node] = community
     return t
 
+def print_communities(communities):
+    for set in communities:
+        if len(set) != 0:
+            print(set)
+            
+
+
 
 
 
