@@ -13,13 +13,16 @@ import random
 # https://networkx.org/documentation/stable/reference/generated/networkx.generators.community.LFR_benchmark_graph.html
 # exactly one of min_degree or average_degree must be specified.
 # Bedenk welke waarden we willen invullen, welke parameters realistisch zijn
-def LFR(n, t1, t2, mu, mincomsize, maxcomsize): #t1, t2 >1, 0<=mu<=1
-    return nx.LFR_benchmark_graph(n, t1, t2, mu,min_degree=1 ,min_community = mincomsize, max_community = maxcomsize)
+def LFR(n, t1, t2, mu, mincomsize, maxcomsize, tries): #t1, t2 >1, 0<=mu<=1
+    try:
+        graph = nx.LFR_benchmark_graph(n, t1, t2, mu,min_degree=1 ,min_community = mincomsize, max_community = maxcomsize)
+    except:
+        tries+=1
+        graph, tries = LFR(n, t1, t2, mu, mincomsize, maxcomsize, tries)
+    return graph, tries
 
 # https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.community.quality.modularity.html
 #communities in shape [{0, 1, 2}, {3, 4, 5}]
-def modularity(G, communities):
-    return nx_comm.modularity(G, communities)
 
     
 # Implement Louvain for modularity, je moet louvain wel zelf implementeren, anders kun je geen andere objective functie hebben

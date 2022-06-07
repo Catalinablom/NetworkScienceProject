@@ -9,3 +9,5 @@ TODO:
 Vragen:
     - moet louvain het net zo goed doen als de nx versie?
     - Hoe berekenen we q?
+    - Kloppen deze uitkomsten? is 0.7 redelijk?
+    - wat doen met LFR die het vaak niet doet?
