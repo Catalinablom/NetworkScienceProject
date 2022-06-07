@@ -23,9 +23,9 @@ def init():
     return G, communities, p
 
 def main():
-    mus = [0.05,0.1]
-    comsizes = [(25,100)]
-    num_runs = 2
+    mus = [0.05, 0.1,0.2,0.3]
+    comsizes = [(25, 100)]
+    num_runs = 1
     results = {}
     
     for mu in mus:
@@ -36,6 +36,7 @@ def main():
             for i in range(num_runs):
                 #generate graph
                 G, tries = LFR(200, 2, 1.05, mu, comsizeL, comsizeR, 0)
+                print("Graph created after ",tries," tries")
                 p = calculate_p(G)
                 
                 #find ground communities
