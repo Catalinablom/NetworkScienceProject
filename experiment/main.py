@@ -10,6 +10,7 @@ import networkx.algorithms.community as nx_comm
 import copy
 import community as community_louvain
 import random
+import json
 
 def init():
     # random.seed(25)
@@ -23,8 +24,8 @@ def init():
 
 def main():
     mus = [0.05,0.1]
-    comsizes = [(25,100),()]
-    num_runs = 8
+    comsizes = [(25,100)]
+    num_runs = 2
     results = {}
     
     for mu in mus:
@@ -70,17 +71,21 @@ def save_results(params,results):
     f.write("\n")
     
     for comsize in comsizes:
-        f.write(str(comsize)+",")
+        l,r = comsize
+        f.write(str(l)+","+str(r)+ ",")
     f.write("\n")
     
     f.write(str(num_runs)+"\n")
     
     for key in results:
-        f.write(str(key))
+        mu , comsize, name = key
+        f.write(str(mu)+ ","+ str(comsize) + ","+ str(name))
         f.write(":")
-        f.write(str(results[key]))
+        for result in results[key]:
+            f.write(str(result)+ ',')
         f.write("\n")
     f.close()
+
 
 
 main()
