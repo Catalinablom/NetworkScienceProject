@@ -33,7 +33,14 @@ def LFR(n, t1, t2, mu, mincomsize, maxcomsize, tries): #t1, t2 >1, 0<=mu<=1
 def Louvain_map_firstround(original_G, G, communities, com_dic, p):
     
     #step 2
+    print("One round of Louvain")
     improvement = True
+    OG_communities = copy.deepcopy(communities)
+    OG_com_dic = copy.deepcopy(com_dic)
+    current_locations = {}
+    for node in G.nodes():
+        current_locations[node] = node
+    
     while improvement:
         # print("hier")
         test = []
@@ -41,19 +48,25 @@ def Louvain_map_firstround(original_G, G, communities, com_dic, p):
         #shuffle node list
         nodes = list(G.nodes())
         random.shuffle(nodes)
+        count = 0
+        print("again")
+        #nodes are index of OG_communities
         for node in nodes:
-            
+            current_loc_node = current_locations[node]
             current_map = map_equation2(original_G,communities, p)
             max_diff_M = 0
             neighbors = list(G.neighbors(node))
             random.shuffle(neighbors)
             for i in neighbors:
-                if node != i: #snap neit waarom ie denkt dat een node een neighbour van zichzelf is maar prima
+                current_loc_i = current_locations[i]
+                if current_loc_node != current_loc_i: #snap neit waarom ie denkt dat een node een neighbour van zichzelf is maar prima
                     
                     # #make new possible partition
                     new_communities = copy.deepcopy(communities)
-                    new_communities[i].update(communities[node])
-                    new_communities[node]=set()
+                    new_communities[current_loc_i].update(OG_communities[node])
+                    new_communities[current_loc_node].difference_update(OG_communities[node])
+                    
+                    # print("new\n",new_communities)
 
                     #calculate modularity for new partition
                     new_map = map_equation2(original_G,new_communities, p)
@@ -61,25 +74,33 @@ def Louvain_map_firstround(original_G, G, communities, com_dic, p):
                     
                     #save option that gives highest increase in modularity
                     if diff_map > max_diff_M:
-                        best_option = i
+                        loc_best_option = current_loc_i
                         max_diff_M = diff_map
                         
-            
+            count +=1 
+            # print("count ",count)
             if max_diff_M >0:
+                # print("improvement found")
                 
-                #update edges in graph by contracting the communities into one node
-                nx.contracted_nodes(G, best_option, node, self_loops=False)
+                #update edges in graph by contracting the communities into one node, new node is called best_option
+                #omdat we dit doen gebruiken we die buitenste loop niet meers
+                # G = nx.contracted_nodes(G, best_option, node, self_loops=False)
+                
+                #update community list
+                communities[loc_best_option].update(OG_communities[node])
+                communities[current_loc_node].difference_update(OG_communities[node])
+                
+                #update current locations
+                current_locations[node] = loc_best_option
                 
                 
                 #update dic which keeps track of key: node, value: position of community it belongs to
-                for j in communities[node]:
-                    com_dic[j] = best_option
+                for j in OG_communities[node]:
+                    com_dic[j] = loc_best_option
+                    
+                # print(communities)
                     
                 #update comunities list
-                communities[best_option].update(communities[node])
-                communities[node]=set()
-                
-                
         
             if max_diff_M == 0 : #if we imporove
                 test.append(False)
@@ -155,7 +176,6 @@ def print_communities(communities):
         if len(set) != 0:
             print(set)
             
-
 
 
 
