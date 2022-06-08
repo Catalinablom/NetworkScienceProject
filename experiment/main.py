@@ -25,13 +25,15 @@ def init():
 
 def main():
     mult = 20
-    mus = [0.05,0.1]
-    comsizes = [(mult, 5*mult), (mult, 6*mult)]
+    mus = [0.05,0.1,0.15,0.2,0.25,0.3]
+    # mus=[0.1]
+    comsizes = [(3*mult,5*mult),(mult, 5*mult), (mult, 6*mult)]
     num_runs = 2
     results = {}
     
     for mu in mus:
         for comsize_num in range(len(comsizes)):
+            print(mu, comsize_num)
             comsizeL, comsizeR = comsizes[comsize_num]
             map_results =[]
             mod_results = []
@@ -78,7 +80,7 @@ def main():
 
 def save_results(params,results):
     mus, comsizes,num_runs = params
-    f = open(r'c:\Users\veerl\OneDrive\Documenten\Mathematical Sciences\Network Science\git\NetworkScienceProject\experiment\results\mu_results.tex', 'w')
+    f = open("results\mu_results.tex", 'w')
     
     for mu in mus:
         f.write(str(mu)+",")
