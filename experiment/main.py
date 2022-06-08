@@ -103,6 +103,6 @@ def save_results(params,results):
     f.close()
 
 
-
+random.seed(25)
 main()
 
