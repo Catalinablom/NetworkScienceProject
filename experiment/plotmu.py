@@ -4,7 +4,8 @@ import json
 
 
 def read_results():
-    f = open('results\mu_results.tex', 'r')
+    f = open(r'c:\Users\veerl\OneDrive\Documenten\Mathematical Sciences\Network Science\git\NetworkScienceProject\experiment\results\mu_results.tex', 'r')
+    #f = open('results\mu_results.tex', 'r')
     lines = f.readlines()
 
     #find mus
@@ -40,28 +41,50 @@ def read_results():
     return mus, comrange,num_runs, results
     
 
-def plot_mu_results(mus, comrange,num_runs, results):
+def plot_mu_results_mod(mus, comrange,num_runs, results):
+    kleuren = ['k','b','r','c','m','g']
+    kleur = 0
+    for comtype in range(len(comrange)):
+        y =[]
+        for mu in mus:
+            resultlist = results[(mu,comtype,'mod')]
+            val = sum(resultlist)/num_runs
+            y.append(val)
+        plt.plot(mus, y, '-ok', label = 'Range community size: '+str(comrange[comtype]), color = kleuren[kleur])
+        kleur += 1
     
-# objective = 'mod'
-# objective = 'map'
+    plt.xlabel('Mixing parameter')
+    plt.ylabel('Normalized Mutual Information')
+    plt.title('Objective function: modularity')   
+    plt.legend()
+    plt.ylim(0,1)
+    plt.savefig('plot_mu_mod.png') 
+    plt.show() 
+    
+def plot_mu_results_map(mus, comrange,num_runs, results):
+    kleuren = ['k','b','r','c','m','g']
+    kleur = 0
+    for comtype in range(len(comrange)):
+        y =[]
+        for mu in mus:
+            resultlist = results[(mu,comtype, 'map')]
+            val = sum(resultlist)/num_runs
+            y.append(val)
+        plt.plot(mus, y, '-ok', label = 'Range community size: '+str(comrange[comtype]), color = kleuren[kleur])
+        kleur += 1
+    
+    plt.xlabel('Mixing parameter')
+    plt.ylabel('Normalized Mutual Information')
+    plt.title('Objective function: map equation')   
+    plt.legend()
+    plt.ylim(0,1)
+    plt.savefig('plot_mu_map.png')
+    plt.show() 
+    
+    
 
-# kleuren = ['k','b','r','c','m','g']
-
-# x = [0.1, 0.2, 0.3, 0.4]
-# #x = list(eersteregel)
-# kleur = 0
-# for comrange in range(1,3):
-#     y = []
-#     for mu in x:  
-#         y.append(math.sin(mu)+comrange)
-#         #y.append(gemiddelde van juiste lijst in txt)
-#     plt.plot(x, y, '-ok', label = 'Range community size: '+str(comrange), color = kleuren[kleur])
-#     kleur += 1
-
-# plt.xlabel('Mixing parameter')
-# plt.ylabel('Normalized Mutual Information')
-# #plt.title('Matplotlib Example')   
-# plt.legend()
-# plt.show() 
-# #plt.savefig('plot_mu.png')
+mus, comrange,num_runs, results = read_results()
+plot_mu_results_map(mus, comrange,num_runs, results)
+plot_mu_results_mod(mus, comrange,num_runs, results)
+            
 
