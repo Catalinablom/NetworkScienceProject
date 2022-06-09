@@ -24,12 +24,12 @@ def init():
     return G, communities, p
 
 def main():
-    mult = 50
+    mult = 10
     mus = [0.1]
     # mus=[0.1]
     # (3*mult,5*mult),(mult, 5*mult), (mult, 6*mult),
-    comsizes = [(5,25)]
-    num_runs = 2
+    comsizes = [(10,50)]
+    num_runs = 1
     results = {}
     
     for mu in mus:
@@ -38,11 +38,11 @@ def main():
             comsizeL, comsizeR = comsizes[comsize_num]
             map_results =[]
             mod_results = []
-            realmod_results = []
+            # realmod_results = []
             for i in range(num_runs):
                 #generate graph
                 print("Creating graph")
-                G, tries = LFR(10*mult, 2.25, 1.25, mu, comsizeL, comsizeR, 0)
+                G, tries = LFR(100*mult, 2.8, 1.8, mu, comsizeL, comsizeR, 0)
                 print("Graph created after ",tries," tries")
                 p = calculate_p(G)
                 
@@ -55,22 +55,22 @@ def main():
                 toc = time.perf_counter()
                 print(f"map solution found in {toc - tic:0.4f} seconds")
                 found_communities_mod, _ = Louvain_mod(G)
-                real_found_communities = nx_comm.louvain_communities(G)
+                # real_found_communities = nx_comm.louvain_communities(G)
                 
                 #convert to vector
                 found_vector_map = communities_to_vector(G, found_communities_map)
                 found_vector_mod = communities_to_vector(G, found_communities_mod)
                 ground_vector = communities_to_vector(G, communities)
-                real_found = communities_to_vector(G,real_found_communities)
+                # real_found = communities_to_vector(G,real_found_communities)
                 
                 #calculcate normalized mutual information
                 map_results.append(norm_mutual_inf(found_vector_map,ground_vector))
                 mod_results.append(norm_mutual_inf(found_vector_mod,ground_vector))
-                realmod_results.append(norm_mutual_inf(real_found,ground_vector))
+                # realmod_results.append(norm_mutual_inf(real_found,ground_vector))
                 
             results[(mu,comsize_num,"map")] = map_results
             results[(mu,comsize_num,"mod")] = mod_results
-            results[(mu,comsize_num,"realmod")] = realmod_results
+            # results[(mu,comsize_num,"realmod")] = realmod_results
             
 
         
