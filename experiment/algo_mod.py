@@ -20,7 +20,7 @@ import random
 # Bedenk welke waarden we willen invullen, welke parameters realistisch zijn
 def LFR(n, t1, t2, mu, mincomsize, maxcomsize, tries): #t1, t2 >1, 0<=mu<=1
     try:
-        graph = nx.LFR_benchmark_graph(n, t1, t2, mu, min_degree=1 ,min_community = mincomsize, max_community = maxcomsize)
+        graph = nx.LFR_benchmark_graph(n, t1, t2, mu, average_degree = 5 ,min_community = mincomsize, max_community = maxcomsize)
     except:
         tries+=1
         print("tried and failed")

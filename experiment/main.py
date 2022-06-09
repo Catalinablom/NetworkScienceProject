@@ -24,11 +24,10 @@ def init():
     return G, communities, p
 
 def main():
-    mult = 20
     mus = [0.05,0.1,0.15,0.2,0.25,0.3]
     # mus=[0.1]
-    comsizes = [(3*mult,5*mult),(mult, 5*mult), (mult, 6*mult)]
-    num_runs = 2
+    comsizes = [(4,20),(6, 30), (8,40)]
+    num_runs = 10
     results = {}
     
     for mu in mus:
@@ -41,7 +40,7 @@ def main():
             for i in range(num_runs):
                 #generate graph
                 print("Creating graph")
-                G, tries = LFR(10*mult, 2, 1.05, mu, comsizeL, comsizeR, 0)
+                G, tries = LFR(200, 2.8, 1.8, mu, comsizeL, comsizeR, 0)
                 print("Graph created after ",tries," tries")
                 p = calculate_p(G)
                 
@@ -80,7 +79,9 @@ def main():
 
 def save_results(params,results):
     mus, comsizes,num_runs = params
-    f = open("results\mu_results.tex", 'w')
+    f = open(r"c:\Users\veerl\OneDrive\Documenten\Mathematical Sciences\Network Science\git\NetworkScienceProject\experiment\results\mu_results.tex", 'w')
+    #f = open("results\mu_results.tex", 'w')
+    
     
     for mu in mus:
         f.write(str(mu)+",")
@@ -103,6 +104,6 @@ def save_results(params,results):
     f.close()
 
 
-
+random.seed(25)
 main()
 
