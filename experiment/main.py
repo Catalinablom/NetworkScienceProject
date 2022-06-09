@@ -91,7 +91,9 @@ def main():
 
 def save_results(params,results):
     mus, comsizes,num_runs = params
-    f = open("results\mu_results.tex", 'w')
+    f = open(r"c:\Users\veerl\OneDrive\Documenten\Mathematical Sciences\Network Science\git\NetworkScienceProject\experiment\results\mu_results.tex", 'w')
+    #f = open("results\mu_results.tex", 'w')
+    
     
     for mu in mus:
         f.write(str(mu)+",")
