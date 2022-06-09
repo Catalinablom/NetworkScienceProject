@@ -24,10 +24,11 @@ def init():
     return G, communities, p
 
 def main():
-    mult = 20
-    mus = [0.05,0.1,0.15,0.2,0.25,0.3]
+    mult = 50
+    mus = [0.1]
     # mus=[0.1]
-    comsizes = [(3*mult,5*mult),(mult, 5*mult), (mult, 6*mult)]
+    # (3*mult,5*mult),(mult, 5*mult), (mult, 6*mult),
+    comsizes = [(5,25)]
     num_runs = 2
     results = {}
     
@@ -41,7 +42,7 @@ def main():
             for i in range(num_runs):
                 #generate graph
                 print("Creating graph")
-                G, tries = LFR(10*mult, 2, 1.05, mu, comsizeL, comsizeR, 0)
+                G, tries = LFR(10*mult, 2.25, 1.25, mu, comsizeL, comsizeR, 0)
                 print("Graph created after ",tries," tries")
                 p = calculate_p(G)
                 
