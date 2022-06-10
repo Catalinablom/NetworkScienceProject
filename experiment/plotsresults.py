@@ -49,6 +49,8 @@ def plot_results_1(mus, comrange,num_runs, results, coms):
     if coms == 3:
         sets = [0,1,2,3]
     kleuren = ['k','b','r','c','m','g']
+    xticks = [str(comrange[i]) for i in sets]
+    x = [1, 2, 3, 4]
     kleur = 0
     for mu in mus:
         mo = []
@@ -60,10 +62,11 @@ def plot_results_1(mus, comrange,num_runs, results, coms):
             resultlist2 = results[(mu,comtype,'map')]
             val2 = sum(resultlist2)/num_runs
             ma.append(val2)
-    plt.plot(comtype, mo, '-ok', label = 'modularity', color = kleuren[kleur])
+    plt.plot(x, mo, '-ok', label = 'modularity', color = kleuren[kleur])
     kleur += 1
-    plt.plot(comtype, ma, '-ok', label = 'map equation', color = kleuren[kleur])
+    plt.plot(x, ma, '-ok', label = 'map equation', color = kleuren[kleur])
     
+    plt.xticks(x, xticks)
     plt.xlabel('Community size range')
     plt.ylabel('Normalized Mutual Information')
     #plt.title('Objective function: modularity')   
@@ -74,7 +77,7 @@ def plot_results_1(mus, comrange,num_runs, results, coms):
      
     
 
-mus, comrange,num_runs, results = read_results()
+mus, comrange,num_runs, results = read_results1()
 plot_results_1(mus, comrange,num_runs, results, 1)
 plot_results_1(mus, comrange,num_runs, results, 2)
 plot_results_1(mus, comrange,num_runs, results, 3)

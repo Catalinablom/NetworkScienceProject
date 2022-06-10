@@ -24,7 +24,7 @@ def init():
     # return G, communities, p
 
 def main():
-    mus = [0.1]
+    mus = [0.2]
     # mus=[0.1]
     # (3*mult,5*mult),(mult, 5*mult), (mult, 6*mult),
     a= 5
