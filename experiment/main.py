@@ -24,7 +24,7 @@ def init():
     # return G, communities, p
 
 def main():
-    mus = [0.1]
+    mus = [0.25]
     # mus=[0.1]
     # (3*mult,5*mult),(mult, 5*mult), (mult, 6*mult),
     a= 5
@@ -91,7 +91,7 @@ def main():
 
 def save_results(params,results):
     mus, comsizes,num_runs = params
-    f = open(r"c:\Users\veerl\OneDrive\Documenten\Mathematical Sciences\Network Science\git\NetworkScienceProject\experiment\results\mu_results.tex", 'w')
+    f = open("results\mu_results.tex", 'w')
     #f = open("results\mu_results.tex", 'w')
     
     
