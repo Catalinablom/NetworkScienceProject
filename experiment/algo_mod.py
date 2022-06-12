@@ -13,80 +13,10 @@ import networkx.algorithms.community as nx_comm
 import copy
 #import community as community_louvain
 import random
+from helper import *
 # from algo_map import LFR
 
-# https://networkx.org/documentation/stable/reference/generated/networkx.generators.community.LFR_benchmark_graph.html
-# exactly one of min_degree or average_degree must be specified.
-# Bedenk welke waarden we willen invullen, welke parameters realistisch zijn
-def LFR(n, t1, t2, mu, mincomsize, maxcomsize, tries): #t1, t2 >1, 0<=mu<=1
-    if tries<100:
-        try:
-            
-            graph = nx.LFR_benchmark_graph(n, t1, t2, mu, average_degree=5 ,min_community = mincomsize, max_community = maxcomsize)
-        except:
-            tries+=1
-            print("tried and failed")
-            graph, tries = LFR(n, t1, t2, mu, mincomsize, maxcomsize, tries)
-        return graph, tries
-    else:
-        return None
-# print(communities) 
-
-# https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.community.quality.modularity.html
-#communities in shape [{0, 1, 2}, {3, 4, 5}]
-def modularity(G, communities):
-    return nx_comm.modularity(G, communities)
-    
-# Implement Louvain for modularity, je moet louvain wel zelf implementeren, anders kun je geen andere objective functie hebben
-# Je wil modularity niet de functie pakken altijd, soms moet je alleen delta M hebben als je één node of één community verplaatst, dan is heel M uitrekenen veel langzamer dan delta M
-
-def calc_diff_M(original_G, com_from, com_to, moved):
-    diff = 0
-    m = original_G.number_of_edges()
-    # com_from.difference_update(moved)
-    sep_com_from = com_from - moved
-    for i in moved:
-        #new edges within the community
-        for j in com_to:
-
-            ki=  len(list(original_G.neighbors(i)))
-            kj=  len(list(original_G.neighbors(j)))
-            if original_G.has_edge(i,j):
-                
-                diff += 1 - (ki*kj) / (2*m)
-            else: 
-                diff += - (ki*kj) / (2*m)
-          
-        #edges that are no longer within a community      
-        for l in sep_com_from:
-
-            ki=  len(list(original_G.neighbors(i)))
-            kl=  len(list(original_G.neighbors(l)))
-            if original_G.has_edge(i,l):
-                diff -= 1 - (ki*kl) / (2*m)
-            else: 
-                diff -=  -(ki*kl) / (2*m)
-                
-    
-    diff = diff/ (2*m)
-    return diff
-
-"OG"
-#calculates diff in modularity from merging 2 communities
-# def calc_diff_M(original_G, com_from, com_to):
-#     diff = 0
-#     m = original_G.number_of_edges()
-#     for i in com_from:
-#         for j in com_to:
-#             ki=  len(list(original_G.neighbors(i)))
-#             kj=  len(list(original_G.neighbors(j)))
-#             if original_G.has_edge(i,j):
-                
-#                 diff += 1 - (ki*kj) / (2*m)
-#             else: 
-#                 diff += - (ki*kj) / (2*m)
-#     diff = diff/ (2*m)
-#     return diff
+"One round of louvain with modularity"
 
 def Louvain_modularity_firstround(original_G, G, communities, com_dic):
     
@@ -95,7 +25,6 @@ def Louvain_modularity_firstround(original_G, G, communities, com_dic):
     improvement = True
     
     OG_communities = copy.deepcopy(communities)
-    OG_com_dic = copy.deepcopy(com_dic)
     current_locations = {}
     for node in G.nodes():
         current_locations[node] = node
@@ -107,7 +36,7 @@ def Louvain_modularity_firstround(original_G, G, communities, com_dic):
         #shuffle node list
         nodes = list(G.nodes())
         random.shuffle(nodes)
-        print("again")
+        print("Running through all nodes")
         for node in nodes:
             current_loc_node = current_locations[node]
             current_mod = modularity(original_G,communities)
@@ -172,10 +101,94 @@ def Louvain_modularity_firstround(original_G, G, communities, com_dic):
                 test.append(False)
             else:
                 test.append(True)
-                
+        
+        #check if there was improvement    
         improvement = any(test)
         
     return communities, com_dic
+
+
+
+"Main louvain algorithm with modularity"
+
+def Louvain_mod(original_G):
+    G = copy.deepcopy(original_G)
+    #step 1 : initliaze communities and modularity
+    communities = [{i} for i in range(G.number_of_nodes())]
+    
+    
+    #create dic which keeps track of key: node, value: position of community it belongs to
+    com_dic = generate_com_dic(communities)
+    
+    
+    
+    improvement =1
+    previous_mod= modularity(G, communities)
+    while improvement > 0:
+        #run first round
+        communities, com_dic = Louvain_modularity_firstround(original_G,G, communities, com_dic)
+        
+        #calculate new modularity
+        current_mod = modularity(original_G, communities)
+        improvement =  current_mod - previous_mod 
+        G = induced_graph(com_dic,G)
+        previous_mod = current_mod
+    
+    
+    return communities, com_dic
+    
+    
+    
+"Calculates the difference in modularity from moving a set of vertices to another community"
+
+def calc_diff_M(original_G, com_from, com_to, moved):
+    diff = 0
+    m = original_G.number_of_edges()
+    # com_from.difference_update(moved)
+    sep_com_from = com_from - moved
+    for i in moved:
+        #new edges within the community
+        for j in com_to:
+
+            ki=  len(list(original_G.neighbors(i)))
+            kj=  len(list(original_G.neighbors(j)))
+            if original_G.has_edge(i,j):
+                
+                diff += 1 - (ki*kj) / (2*m)
+            else: 
+                diff += - (ki*kj) / (2*m)
+          
+        #edges that are no longer within a community      
+        for l in sep_com_from:
+
+            ki=  len(list(original_G.neighbors(i)))
+            kl=  len(list(original_G.neighbors(l)))
+            if original_G.has_edge(i,l):
+                diff -= 1 - (ki*kl) / (2*m)
+            else: 
+                diff -=  -(ki*kl) / (2*m)
+                
+    
+    diff = diff/ (2*m)
+    return diff
+
+#calculates diff in modularity from merging 2 communities
+# def calc_diff_M(original_G, com_from, com_to):
+#     diff = 0
+#     m = original_G.number_of_edges()
+#     for i in com_from:
+#         for j in com_to:
+#             ki=  len(list(original_G.neighbors(i)))
+#             kj=  len(list(original_G.neighbors(j)))
+#             if original_G.has_edge(i,j):
+                
+#                 diff += 1 - (ki*kj) / (2*m)
+#             else: 
+#                 diff += - (ki*kj) / (2*m)
+#     diff = diff/ (2*m)
+#     return diff
+
+
             
 "Originale versie"
 # def Louvain_modularity_firstround(original_G, G, communities, com_dic):
@@ -248,69 +261,9 @@ def Louvain_modularity_firstround(original_G, G, communities, com_dic):
         
 #     return communities, com_dic
 
-#generates dictionary with key : node, value: community it belongs to
-def generate_com_dic(communities):
-    num_communities = len(communities)
-    com_dic = {}
-    for i in range(num_communities):
-        for node in communities[i]:
-            com_dic[node]=i
-            
-    return com_dic
-    
 
 
-#compresses each community into one node
-def induced_graph(com_dic, graph):
-    "inspiration from https://github.com/taynaud/python-louvain/blob/master/community/community_louvain.py"
-    
-    #nodecom_to_gencom keeps tracks of which nodes are actually in communities compressed to nodes
-    #is a dic with key: node name, value: set of nodes
-    ret = nx.Graph()
-    ret.add_nodes_from(com_dic.values())
 
-    for node1, node2 in graph.edges():
-        com1 = com_dic[node1]
-        com2 = com_dic[node2]
-        ret.add_edge(com1, com2)
-
-    return ret
-
-def Louvain_mod(original_G):
-    G = copy.deepcopy(original_G)
-    #step 1 : initliaze communities and modularity
-    communities = [{i} for i in range(G.number_of_nodes())]
-    
-    
-    #create dic which keeps track of key: node, value: position of community it belongs to
-    com_dic = generate_com_dic(communities)
-    
-    
-    
-    improvement =1
-    previous_mod= modularity(G, communities)
-    while improvement > 0:
-        #run first round
-        communities, com_dic = Louvain_modularity_firstround(original_G,G, communities, com_dic)
-        
-        #calculate new modularity
-        current_mod = modularity(original_G, communities)
-        improvement =  current_mod - previous_mod 
-        G = induced_graph(com_dic,G)
-        previous_mod = current_mod
-    
-    
-    return communities, com_dic
-    
-    
-    
-    
-def communities_to_vector(G,communities):
-    t = [0]*G.number_of_nodes() 
-    for community in range(len(communities)):
-        for node in list(communities)[community]:
-            t[node] = community
-    return t
 
 
 # G, tries = LFR(20, 2, 1.05, 0.1, 2, 10, 0)
