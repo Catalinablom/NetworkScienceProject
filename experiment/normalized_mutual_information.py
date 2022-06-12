@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed May 25 15:31:17 2022
 
-@author: veerl
-"""
 import math
 
 def delta(a, b):

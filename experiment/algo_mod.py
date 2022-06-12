@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon May 23 13:39:44 2022
 
-@author: veerl
-"""
 
 from ast import Or
 # from selectors import EpollSelector
