@@ -78,6 +78,6 @@ def plot_results_1(mus, comrange,num_runs, results, coms):
     
 
 mus, comrange,num_runs, results = read_results1()
-plot_results_1(mus, comrange,num_runs, results, 1)
-plot_results_1(mus, comrange,num_runs, results, 2)
+#plot_results_1(mus, comrange,num_runs, results, 1)
+#plot_results_1(mus, comrange,num_runs, results, 2)
 plot_results_1(mus, comrange,num_runs, results, 3)
