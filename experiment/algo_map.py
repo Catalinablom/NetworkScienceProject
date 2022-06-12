@@ -8,48 +8,27 @@ import networkx.algorithms.community as nx_comm
 import copy
 #import community as community_louvain
 import random
-
-
-# https://networkx.org/documentation/stable/reference/generated/networkx.generators.community.LFR_benchmark_graph.html
-# exactly one of min_degree or average_degree must be specified.
-# Bedenk welke waarden we willen invullen, welke parameters realistisch zijn
-# def LFR(n, t1, t2, mu, mincomsize, maxcomsize, tries): #t1, t2 >1, 0<=mu<=1
-#     try:
-#         graph = nx.LFR_benchmark_graph(n, t1, t2, mu, min_degree=1 ,min_community = mincomsize, max_community = maxcomsize)
-#     except:
-#         tries+=1
-#         print("tried and failed")
-#         graph, tries = LFR(n, t1, t2, mu, mincomsize, maxcomsize, tries)
-#     return graph, tries
-
-# https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.community.quality.modularity.html
-#communities in shape [{0, 1, 2}, {3, 4, 5}]
-
-    
-# Implement Louvain for modularity, je moet louvain wel zelf implementeren, anders kun je geen andere objective functie hebben
-# Je wil modularity niet de functie pakken altijd, soms moet je alleen delta M hebben als je één node of één community verplaatst, dan is heel M uitrekenen veel langzamer dan delta M
-            
-
+from helper import *
+        
+"One round of louvain with map equation"
 def Louvain_map_firstround(original_G, G, communities, com_dic, p):
     
     #step 2
     print("One round of Louvain")
     improvement = True
     OG_communities = copy.deepcopy(communities)
-    OG_com_dic = copy.deepcopy(com_dic)
     current_locations = {}
     for node in G.nodes():
         current_locations[node] = node
     
     while improvement:
-        # print("hier")
         test = []
         
         #shuffle node list
         nodes = list(G.nodes())
         random.shuffle(nodes)
         count = 0
-        print("again")
+        print("Running through all nodes")
         #nodes are index of OG_communities
         for node in nodes:
             current_loc_node = current_locations[node]
@@ -80,11 +59,6 @@ def Louvain_map_firstround(original_G, G, communities, com_dic, p):
             count +=1 
             # print("count ",count)
             if max_diff_M >0:
-                # print("improvement found")
-                
-                #update edges in graph by contracting the communities into one node, new node is called best_option
-                #omdat we dit doen gebruiken we die buitenste loop niet meers
-                # G = nx.contracted_nodes(G, best_option, node, self_loops=False)
                 
                 #update community list
                 communities[loc_best_option].update(OG_communities[node])
@@ -102,41 +76,20 @@ def Louvain_map_firstround(original_G, G, communities, com_dic, p):
                     
                 #update comunities list
         
+        
             if max_diff_M == 0 : #if we imporove
                 test.append(False)
             else:
                 test.append(True)
-                
+            
+        #check if there was improvement    
         improvement = any(test)
         
     return communities, com_dic
 
-#generates dictionary with key : node, value: community it belongs to
-def generate_com_dic(communities):
-    num_communities = len(communities)
-    com_dic = {}
-    for i in range(num_communities):
-        for node in communities[i]:
-            com_dic[node]=i
-            
-    return com_dic
     
 
-#compresses each community into one node
-def induced_graph(com_dic, graph):
-    "inspiration from https://github.com/taynaud/python-louvain/blob/master/community/community_louvain.py"
-    
-    #nodecom_to_gencom keeps tracks of which nodes are actually in communities compressed to nodes
-    #is a dic with key: node name, value: set of nodes
-    ret = nx.Graph()
-    ret.add_nodes_from(com_dic.values())
-
-    for node1, node2 in graph.edges():
-        com1 = com_dic[node1]
-        com2 = com_dic[node2]
-        ret.add_edge(com1, com2)
-
-    return ret
+"Main louvain algorithm with map equation"
 
 def Louvain_map(original_G, p):
     G = copy.deepcopy(original_G)
@@ -164,17 +117,9 @@ def Louvain_map(original_G, p):
     
     
     
-def communities_to_vector(G,communities):
-    t = [0]*G.number_of_nodes() 
-    for community in range(len(communities)):
-        for node in list(communities)[community]:
-            t[node] = community
-    return t
 
-def print_communities(communities):
-    for set in communities:
-        if len(set) != 0:
-            print(set)
+
+
             
 
 
