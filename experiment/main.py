@@ -13,16 +13,6 @@ import copy
 import random
 import time
 
-def init():
-    # random.seed(25)
-    " We have to find a combination of parameter values that always is able to produce a graph"
-    # G, tries = LFR(50, 2, 1.05, 0.1, 10, 25, 0)
-    # print(tries)
-    # # nx.draw(G)
-    # communities = {frozenset(G.nodes[v]["community"]) for v in G}
-    # p = calculate_p(G)
-    # return G, communities, p
-
 def main():
     mus = [0.25]
     # mus=[0.1]
@@ -34,6 +24,7 @@ def main():
     # comsizes = [(a,b)]
     num_runs = 10
     results = {}
+    tic = time.perf_counter()
     
     for mu in mus:
         for comsize_num in range(len(comsizes)):
@@ -41,12 +32,11 @@ def main():
             comsizeL, comsizeR = comsizes[comsize_num]
             map_results =[]
             mod_results = []
-            avg_com_sizes = []
+            com_sizes = []
             # realmod_results = []
             for i in range(num_runs):
                 #generate graph
                 print("Creating graph")
-                tic = time.perf_counter()
                 G, tries = LFR(500, 2.8, 1.8, mu, comsizeL, comsizeR, 0)
                 print("Graph created after ",tries," tries")
                 p = calculate_p(G)
@@ -55,11 +45,10 @@ def main():
                 communities = {frozenset(G.nodes[v]["community"]) for v in G}
                 
                 num_com = len(communities)
-                sizes = 0
+                sizes = []
                 for community in communities:
-                    sizes += len(community)
-                avg_com_size = sizes/num_com
-                avg_com_sizes.append(avg_com_size)
+                    sizes.append(len(community))
+                results[(mu, comsize_num,i)]= sizes
                     
                 #find diff communities
                 found_communities_map, _= Louvain_map(G, p)
@@ -77,19 +66,20 @@ def main():
                 mod_results.append(norm_mutual_inf(found_vector_mod,ground_vector))
                 # realmod_results.append(norm_mutual_inf(real_found,ground_vector))
                 
-                toc = time.perf_counter()
-                print(f"Total run in in {toc - tic:0.4f} seconds")
+                
                 
             results[(mu,comsize_num,"map")] = map_results
             results[(mu,comsize_num,"mod")] = mod_results
-            results[(mu,comsize_num,"gen")] = avg_com_sizes
+            # results[(mu,comsize_num,"gen")] = avg_com_sizes
             # results[(mu,comsize_num,"realmod")] = realmod_results
             
 
-        
+    toc = time.perf_counter()
+    print(f"Total run in in {toc - tic:0.4f} seconds") 
     save_results((mus, comsizes,num_runs),results)
 
 def save_results(params,results):
+    #save results to results\mu_results.tex
     mus, comsizes,num_runs = params
     f = open(r"c:\Users\veerl\OneDrive\Documenten\Mathematical Sciences\Network Science\git\NetworkScienceProject\experiment\results\mu_results.tex", 'w')
     #f = open("results\mu_results.tex", 'w')
