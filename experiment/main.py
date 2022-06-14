@@ -20,7 +20,10 @@ def main():
     a= 5
     b = 25
     c= 5
-    comsizes = [(a,b),(2*a,2*b),(3*a,3*b),(4*a,4*b), (a,2*b), (a,3*b),(a,4*b),(a+c,b+c),(a+2*c,b+2*c),(a+3*c,b+3*c)]
+    # comsizes = [(a,b),(2*a,2*b),(3*a,3*b),(4*a,4*b), (a,2*b), (a,3*b),(a,4*b),(a+c,b+c),(a+2*c,b+2*c),(a+3*c,b+3*c)]
+    comsize = []
+    for i in np.arrange(1,4,0.2):
+        comsize.append((round(i*a),round(i*b)))
     # comsizes = [(a,b)]
     num_runs = 10
     results = {}
