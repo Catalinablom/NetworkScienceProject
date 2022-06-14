@@ -42,15 +42,52 @@ def read_results2():
     
 
 def plot_results_2(mus, comrange,num_runs, results, eigenschap):
-    # eigenschap in ['num_small', 'frac_small', 'av_size', 'range', 'num_coms']
+    # eigenschap in ['num_small', 'frac_small', 'av_size', 'range', 'num_coms', 'smallest_comsize', 'largest_comsize']
+    mu = mus[-1]
     x = []
     y = []
-    for com in comrange:
-        verschil = results[(mu,com,'mod')]-results[(mu,com,'map')] #doet hij nu getallen van elkaar afhalen of lijsten?
-        y.append(verschil)
-        x.append(results[(mu, com, eigenschap)])
+    for com in range(len(comrange)):
+        for run in range(num_runs):
+            mo = results[(mu,com,'mod')][run]
+            ma = results[(mu,com,'map')][run]
+            verschil = mo - ma
+            y.append(verschil)
+            comsizes = results[(mu,com,str(run))]
+            l = len(comsizes)
+            if eigenschap == 'num_small':
+                aantal = 0
+                for i in range(l):
+                    if 5 <= comsizes[i] <= 25:
+                        aantal += 1
+                eig = aantal
+                naam = 'Number of small communities'
+            if eigenschap == 'frac_small':
+                aantal = 0
+                for i in range(l):
+                    if 5 <= comsizes[i] <= 25:
+                        aantal += 1
+                eig = aantal/l
+                naam = 'Fraction of small communities'
+            if eigenschap == 'av_size':
+                eig = sum(comsizes)/l
+                naam = 'Average community size'
+            if eigenschap == 'range':
+                grootste = max(comsizes)
+                kleinste = min(comsizes)
+                eig = grootste - kleinste
+                naam = 'Size of largest community - size of smallest community'
+            if eigenschap == 'num_coms':
+                eig = l
+                naam = 'Number of communities'
+            if eigenschap == 'smallest_comsize':
+                eig = min(comsizes)
+                naam = 'Size of smallest community'
+            if eigenschap == 'largest_comsize':
+                eig = max(comsizes)
+                naam = 'Size of largest community'
+            x.append(eig)
     plt.scatter(x, y)
-    plt.xlabel(eigenschap) #verander dit naar een heel woord
+    plt.xlabel(naam)
     plt.ylabel('NMI(mod)-NMI(map)')
     #plt.title('Objective function: modularity')   
     plt.ylim(-1,1)
@@ -60,6 +97,6 @@ def plot_results_2(mus, comrange,num_runs, results, eigenschap):
     
 
 mus, comrange,num_runs, results = read_results2()
-eigenschappen = ['num_small', 'frac_small', 'av_size', 'range', 'num_coms']
+eigenschappen = ['num_small', 'frac_small', 'av_size', 'range', 'num_coms', 'smallest_comsize', 'largest_comsize']
 for i in eigenschappen:
     plot_results_2(mus, comrange,num_runs, results, i)

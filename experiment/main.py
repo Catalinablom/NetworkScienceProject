@@ -22,7 +22,7 @@ def main():
     c= 5
     comsizes = [(a,b),(2*a,2*b),(3*a,3*b),(4*a,4*b), (a,2*b), (a,3*b),(a,4*b),(a+c,b+c),(a+2*c,b+2*c),(a+3*c,b+3*c)]
     # comsizes = [(a,b)]
-    num_runs = 10
+    num_runs = 2
     results = {}
     tic = time.perf_counter()
     
