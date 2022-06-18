@@ -47,12 +47,14 @@ def plot_results_2(mus, comrange,num_runs, results, eigenschap):
     x = []
     y = []
     for com in range(len(comrange)):
+    #for com in range(31, len(comrange)+31):
         for run in range(num_runs):
             mo = results[(mu,com,'mod')][run]
             ma = results[(mu,com,'map')][run]
             verschil = mo - ma
             y.append(verschil)
             comsizes = results[(mu,com,str(run))]
+            
             l = len(comsizes)
             if eigenschap == 'num_small':
                 aantal = 0
@@ -90,13 +92,14 @@ def plot_results_2(mus, comrange,num_runs, results, eigenschap):
     plt.xlabel(naam)
     plt.ylabel('NMI(mod)-NMI(map)')
     #plt.title('Objective function: modularity')   
-    plt.ylim(-1,1)
+    plt.ylim(-0.3,0.3)
     plt.savefig('plot'+eigenschap+'.png') 
     plt.show() 
      
     
 
 mus, comrange,num_runs, results = read_results2()
-eigenschappen = ['num_small', 'frac_small', 'av_size', 'range', 'num_coms', 'smallest_comsize', 'largest_comsize']
+#eigenschappen = ['num_small', 'frac_small', 'av_size', 'range', 'num_coms', 'smallest_comsize', 'largest_comsize']
+eigenschappen = ['num_small', 'frac_small', 'num_coms']
 for i in eigenschappen:
     plot_results_2(mus, comrange,num_runs, results, i)
