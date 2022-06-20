@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import math
 import json
+import numpy as np
+from sklearn.linear_model import LinearRegression
 
 
 def read_results2():
@@ -54,19 +56,20 @@ def plot_results_2(mus, comrange,num_runs, results, eigenschap):
             verschil = mo - ma
             y.append(verschil)
             comsizes = results[(mu,com,str(run))]
+            z = 25 #size of biggest smallest community
             
             l = len(comsizes)
             if eigenschap == 'num_small':
                 aantal = 0
                 for i in range(l):
-                    if 5 <= comsizes[i] <= 25:
+                    if 5 <= comsizes[i] <= z:
                         aantal += 1
                 eig = aantal
                 naam = 'Number of small communities'
             if eigenschap == 'frac_small':
                 aantal = 0
                 for i in range(l):
-                    if 5 <= comsizes[i] <= 25:
+                    if 5 <= comsizes[i] <= z:
                         aantal += 1
                 eig = aantal/l
                 naam = 'Fraction of small communities'
@@ -88,18 +91,40 @@ def plot_results_2(mus, comrange,num_runs, results, eigenschap):
                 eig = max(comsizes)
                 naam = 'Size of largest community'
             x.append(eig)
-    plt.scatter(x, y)
-    plt.xlabel(naam)
-    plt.ylabel('NMI(mod)-NMI(map)')
-    #plt.title('Objective function: modularity')   
-    plt.ylim(-0.3,0.3)
-    plt.savefig('plot'+eigenschap+'.png') 
-    plt.show() 
+    #plt.scatter(x, y)
+    #plt.xlabel(naam)
+    #plt.ylabel('NMI(mod)-NMI(map)') 
+    #plt.ylim(-0.3,0.3)
+    #plt.savefig('plot'+eigenschap+'.png') 
+    #plt.show() 
+    return x,y
      
     
 
 mus, comrange,num_runs, results = read_results2()
 #eigenschappen = ['num_small', 'frac_small', 'av_size', 'range', 'num_coms', 'smallest_comsize', 'largest_comsize']
-eigenschappen = ['num_small', 'frac_small', 'num_coms']
+#eigenschappen = ['num_small', 'frac_small', 'num_coms']
+eigenschappen = ['num_small']
+#eigenschappen = ['num_coms']
 for i in eigenschappen:
-    plot_results_2(mus, comrange,num_runs, results, i)
+    x,y = plot_results_2(mus, comrange,num_runs, results, i)
+    x = np.array(x).reshape((-1,1))
+    y = np.array(y)
+    model = LinearRegression().fit(x, y)
+    r_sq = model.score(x, y)
+    print(f"coefficient of determination: {r_sq}")
+    print(f"intercept: {model.intercept_}")
+    print(f"slope: {model.coef_}")
+    
+    def regressie(x, intercept, coef):
+        return x*coef+intercept
+    
+    plt.scatter(x, y)
+    plt.plot(x, regressie(x,model.intercept_, model.coef_[0]), color = 'r', label='y='+str(round(model.coef_[0],5))+'x+'+str(round(model.intercept_,5)))
+    plt.xlabel(i)
+    plt.ylabel('NMI(mod)-NMI(map)')  
+    plt.ylim(-0.3,0.3)
+    plt.legend()
+    plt.title('R-squared value: '+str(round(r_sq,5)))
+    plt.savefig('plot'+i+'regressie'+'.png') 
+    plt.show() 
