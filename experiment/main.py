@@ -16,14 +16,11 @@ import numpy as np
 from plotmu import * 
 
 def main(mus, comsizes, num_runs, n):
-    mus = [0.2]
-    # mus=[0.1]
-    # (3*mult,5*mult),(mult, 5*mult), (mult, 6*mult),
-    a= 5
-    b = 25
-    c= 10
-    # comsizes = [(a,b),(2*a,2*b),(3*a,3*b),(4*a,4*b), (a,2*b), (a,3*b),(a,4*b),(a+c,b+c),(a+2*c,b+2*c),(a+3*c,b+3*c)]
-    comsizes = []
+    # mus = [0.2]
+    # a= 5
+    # b = 25
+    # c= 10
+    # comsizes = []
     #for i in range(1,17):
     #    comsizes.append((round(i*a),round(i*b)))
     #for i in range(2,17):
