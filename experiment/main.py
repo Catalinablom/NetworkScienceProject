@@ -13,6 +13,7 @@ import copy
 import random
 import time
 import numpy as np
+from plotmu import * 
 
 def main():
     mus = [0.2]
@@ -71,34 +72,34 @@ def main():
                 #find diff communities
                 found_communities_map, _= Louvain_map(G, p)
                 found_communities_mod, _ = Louvain_mod(G)
-                # real_found_communities = nx_comm.louvain_communities(G)
                 
                 #convert to vector
                 found_vector_map = communities_to_vector(G, found_communities_map)
                 found_vector_mod = communities_to_vector(G, found_communities_mod)
                 ground_vector = communities_to_vector(G, communities)
-                # real_found = communities_to_vector(G,real_found_communities)
                 
                 #calculcate normalized mutual information
                 map_results.append(norm_mutual_inf(found_vector_map,ground_vector))
                 mod_results.append(norm_mutual_inf(found_vector_mod,ground_vector))
-                # realmod_results.append(norm_mutual_inf(real_found,ground_vector))
                 
                 
                 
             results[(mu,comsize_num,"map")] = map_results
             results[(mu,comsize_num,"mod")] = mod_results
             # results[(mu,comsize_num,"gen")] = avg_com_sizes
-            # results[(mu,comsize_num,"realmod")] = realmod_results
-            
+
 
     toc = time.perf_counter()
     print(f"Total run in in {toc - tic:0.4f} seconds") 
     save_results((mus, comsizes,num_runs),results)
-
+    
+    
+"Function that saves results to folder results"
 def save_results(params,results):
     #save results to results\mu_results.tex
     mus, comsizes,num_runs = params
+    
+    "Write your own path here to read results"
     f = open(r"c:\Users\veerl\OneDrive\Documenten\Mathematical Sciences\Network Science\git\NetworkScienceProject\experiment\results\mu_results.tex", 'w')
     #f = open("results\mu_results.tex", 'w')
     
@@ -126,4 +127,12 @@ def save_results(params,results):
 
 
 random.seed(5)
+
+"Uncomment the following code and run main.py to plot our results for different values of mu."
+main()
+mus, comrange,num_runs, results = read_results()
+plot_mu_results_map(mus, comrange,num_runs, results)
+plot_mu_results_mod(mus, comrange,num_runs, results)
+
+"Uncomment the following code and run main.py to run our experiment and plot the results."
 main()

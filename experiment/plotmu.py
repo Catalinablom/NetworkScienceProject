@@ -4,6 +4,7 @@ import json
 
 
 def read_results():
+    "Write your own path here to read results"
     f = open(r"c:\Users\veerl\OneDrive\Documenten\Mathematical Sciences\Network Science\git\NetworkScienceProject\experiment\results\mu_results.tex", 'r')
     #f = open('results\mu_results.tex', 'r')
     lines = f.readlines()
@@ -80,6 +81,8 @@ def plot_mu_results_map(mus, comrange,num_runs, results):
     plt.ylim(0,1)
     plt.savefig('plot_mu_map.png')
     plt.show() 
+    
+
     
     
 
