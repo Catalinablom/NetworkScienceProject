@@ -15,7 +15,7 @@ import time
 import numpy as np
 from plotmu import * 
 
-def main():
+def main(mus, comsizes, num_runs, n):
     mus = [0.2]
     # mus=[0.1]
     # (3*mult,5*mult),(mult, 5*mult), (mult, 6*mult),
@@ -51,12 +51,11 @@ def main():
             comsizeL, comsizeR = comsizes[comsize_num]
             map_results =[]
             mod_results = []
-            com_sizes = []
             # realmod_results = []
             for i in range(num_runs):
                 #generate graph
                 print("Creating graph")
-                G, tries = LFR(500, 2.8, 1.8, mu, comsizeL, comsizeR, 0)
+                G, tries = LFR(n, 2.8, 1.8, mu, comsizeL, comsizeR, 0)
                 print("Graph created after ",tries," tries")
                 p = calculate_p(G)
                 
@@ -86,7 +85,6 @@ def main():
                 
             results[(mu,comsize_num,"map")] = map_results
             results[(mu,comsize_num,"mod")] = mod_results
-            # results[(mu,comsize_num,"gen")] = avg_com_sizes
 
 
     toc = time.perf_counter()
@@ -129,10 +127,17 @@ def save_results(params,results):
 random.seed(5)
 
 "Uncomment the following code and run main.py to plot our results for different values of mu."
-main()
+mus = [0.05,0.1,0.15,0.2,0.25,0.3]
+n = 200
+comsizes = [(4, 20),(6, 30),(8, 40)]
+num_runs = 10
+main(mus, comsizes, num_runs, n)
 mus, comrange,num_runs, results = read_results()
 plot_mu_results_map(mus, comrange,num_runs, results)
 plot_mu_results_mod(mus, comrange,num_runs, results)
 
 "Uncomment the following code and run main.py to run our experiment and plot the results."
-main()
+n = 500
+mus = [0.25]
+num_runs = 2 
+main(mus, comsizes, num_runs, n)
