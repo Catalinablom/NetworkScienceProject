@@ -3,11 +3,12 @@ import math
 import json
 import numpy as np
 from sklearn.linear_model import LinearRegression
+import statsmodels.api as sm
 
 
 def read_results2():
-    f = open(r"c:\Users\veerl\OneDrive\Documenten\Mathematical Sciences\Network Science\git\NetworkScienceProject\experiment\results\mu_results.tex", 'r')
-    #f = open('results\mu_results.tex', 'r')
+    # f = open(r"c:\Users\veerl\OneDrive\Documenten\Mathematical Sciences\Network Science\git\NetworkScienceProject\experiment\results\mu_results.tex", 'r')
+    f = open('results\mu_results.tex', 'r')
     lines = f.readlines()
 
     #find mus
@@ -115,6 +116,11 @@ for i in eigenschappen:
     print(f"coefficient of determination: {r_sq}")
     print(f"intercept: {model.intercept_}")
     print(f"slope: {model.coef_}")
+    
+    X2 = sm.add_constant(x)
+    est = sm.OLS(y, X2)
+    est2 = est.fit()
+    print(est2.summary())
     
     def regressie(x, intercept, coef):
         return x*coef+intercept
