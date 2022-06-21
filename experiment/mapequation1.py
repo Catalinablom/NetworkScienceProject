@@ -38,8 +38,6 @@ def calculate_q(graph, communities, p):
         qi = calculate_qi(i)
         q.append(qi) 
         
-    # print('Dit is q:', q)   
-    # print('som q:',sum(q))
     return q   
 
 'Calculate the vector p, where p_i is the probability to be in node i'
@@ -92,12 +90,4 @@ def map_equation2(graph, communities, p):
     
     return result
 
-'Generate graph, list of ground-truth communities and vector p'
-#graph = LFR(100, 2.5, 2.5, 0.2,10, 40)
-#communities = list({frozenset(graph.nodes[v]["community"]) for v in graph})
-#p = calculate_p(graph)
 
-#q = calculate_q(graph,communities,p)
-
-'Calculate value of map equation of ground-truth communities'
-#print('mapeq2:', map_equation2(graph, communities, p))
