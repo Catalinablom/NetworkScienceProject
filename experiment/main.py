@@ -15,7 +15,7 @@ import time
 import numpy as np
 
 def main():
-    mus = [0.2]
+    mus = [0.25]
     # mus=[0.1]
     # (3*mult,5*mult),(mult, 5*mult), (mult, 6*mult),
     a= 5
@@ -23,12 +23,11 @@ def main():
     c= 10
     # comsizes = [(a,b),(2*a,2*b),(3*a,3*b),(4*a,4*b), (a,2*b), (a,3*b),(a,4*b),(a+c,b+c),(a+2*c,b+2*c),(a+3*c,b+3*c)]
     comsizes = []
-    #for i in range(1,17):
-    #    comsizes.append((round(i*a),round(i*b)))
-    #for i in range(2,17):
-    #     comsizes.append((a,i*b))
-    'Eerste'
-    for i in range(0, 6):
+    for i in range(1,17):
+        comsizes.append((round(i*a),round(i*b)))
+    for i in range(2,17):
+         comsizes.append((a,i*b))
+    for i in range(1, 6):
         comsizes.append((a+i*c, b+i*c))
     d = 2
     for i in range(1,8):
@@ -36,8 +35,6 @@ def main():
     e = 4
     for i in range(1,8):
         comsizes.append((a, b+i*e))
-        
-    'Tweede'
     
     # comsizes = [(a,b)]
     num_runs = 2
@@ -116,8 +113,8 @@ def save_results(params,results):
     
     for key in results:
         mu , comsize, name = key
-        #f.write(str(mu)+ ","+ str(comsize) + ","+ str(name))
-        f.write(str(mu)+ ","+ str(comsize+31) + ","+ str(name))
+        f.write(str(mu)+ ","+ str(comsize) + ","+ str(name))
+        #f.write(str(mu)+ ","+ str(comsize+51) + ","+ str(name))
         f.write(":")
         for result in results[key]:
             f.write(str(result)+ ',')
@@ -125,5 +122,5 @@ def save_results(params,results):
     f.close()
 
 
-random.seed(5)
+random.seed(15)
 main()
