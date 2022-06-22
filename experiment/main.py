@@ -102,6 +102,7 @@ def save_results(params,results):
 random.seed(15)
 
 "Uncomment the following code and run main.py to plot our results for different values of mu."
+''''
 mus = [0.05,0.1,0.15,0.2,0.25,0.3]
 n = 200
 comsizes = [(4, 20),(6, 30),(8, 40)]
@@ -110,8 +111,10 @@ main(mus, comsizes, num_runs, n)
 mus, comrange,num_runs, results = read_results()
 plot_mu_results_map(mus, comrange,num_runs, results)
 plot_mu_results_mod(mus, comrange,num_runs, results)
+'''
 
 "Uncomment the following code and run main.py to run our experiment and plot the results."
+'''
 n = 500
 mus = [0.25]
 num_runs = 2 
@@ -133,6 +136,7 @@ for i in range(1,8):
     comsizes.append((a, b+i*e))
 
 main(mus, comsizes, num_runs, n)
+'''
 mus, comrange,num_runs, results = read_results()
 
 # get data for scatter plot
@@ -146,6 +150,11 @@ r_sq = model.score(x, y)
 print(f"coefficient of determination: {r_sq}")
 print(f"intercept: {model.intercept_}")
 print(f"slope: {model.coef_}")
+
+X2 = sm.add_constant(x)
+est = sm.OLS(y, X2)
+est2 = est.fit()
+print(est2.summary())
 
 def regressie(x, intercept, coef):
     return x*coef+intercept
@@ -162,5 +171,5 @@ plt.savefig('plot'+'_num_small_'+'regressie'+str(mus[-1])+'.png')
 plt.show() 
 
 # make plots for modularity and map equation seperately
-plot_mod_or_map(mus, comrange,num_runs, 'map')
-plot_mod_or_map(mus, comrange,num_runs, 'mod')
+y1 = plot_mod_or_map(mus, comrange,num_runs, 'map', results)
+y2 = plot_mod_or_map(mus, comrange,num_runs, 'mod', results)

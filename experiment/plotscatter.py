@@ -34,7 +34,7 @@ def plot_scatter_data(mus, comrange,num_runs, results):
     return x,y
 
 # plot number of small communities against NMI for either modularity or map equation (scatter plot)
-def plot_mod_or_map(mus, comrange,num_runs, measure):
+def plot_mod_or_map(mus, comrange,num_runs, measure, results):
     mu = mus[-1]
     x = []
     y = []
@@ -68,8 +68,10 @@ def plot_mod_or_map(mus, comrange,num_runs, measure):
                     y_zero.append(ma)
             else:
                 x.append(eig)
-              
+    
+    x_zero = [0]*len(y_zero)
     plt.scatter(x, y)
+    plt.scatter(x_zero, y_zero, color = 'r')
     plt.title('Objective function: '+ title )
     plt.xlabel('Number of small communities')
     plt.ylabel('Normalized mutual information')
