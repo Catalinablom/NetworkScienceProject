@@ -41,7 +41,7 @@ def read_results():
         
     return mus, comrange,num_runs, results
     
-
+# make a plot of normalized mutual information against mixing parameter mu for modularity, different lines corrsponding to different graphs are plot
 def plot_mu_results_mod(mus, comrange,num_runs, results):
     kleuren = ['k','b','r','c','m','g']
     kleur = 0
@@ -62,6 +62,7 @@ def plot_mu_results_mod(mus, comrange,num_runs, results):
     plt.savefig('plot_mu_mod.png') 
     plt.show() 
     
+# make a plot of normalized mutual information against mixing parameter mu for map equation, different lines corrsponding to different graphs are plot
 def plot_mu_results_map(mus, comrange,num_runs, results):
     kleuren = ['k','b','r','c','m','g']
     kleur = 0
@@ -81,13 +82,6 @@ def plot_mu_results_map(mus, comrange,num_runs, results):
     plt.ylim(0,1)
     plt.savefig('plot_mu_map.png')
     plt.show() 
-    
 
-    
-    
-
-mus, comrange,num_runs, results = read_results()
-plot_mu_results_map(mus, comrange,num_runs, results)
-plot_mu_results_mod(mus, comrange,num_runs, results)
             
 

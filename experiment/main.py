@@ -14,31 +14,9 @@ import random
 import time
 import numpy as np
 from plotmu import * 
+from plotscatter import *
 
 def main(mus, comsizes, num_runs, n):
-    # mus = [0.2]
-    # a= 5
-    # b = 25
-    # c= 10
-    # comsizes = []
-    #for i in range(1,17):
-    #    comsizes.append((round(i*a),round(i*b)))
-    #for i in range(2,17):
-    #     comsizes.append((a,i*b))
-    'Eerste'
-    for i in range(0, 6):
-        comsizes.append((a+i*c, b+i*c))
-    d = 2
-    for i in range(1,8):
-        comsizes.append((a+i*d, b+i*d))
-    e = 4
-    for i in range(1,8):
-        comsizes.append((a, b+i*e))
-        
-    'Tweede'
-    
-    # comsizes = [(a,b)]
-    num_runs = 2
     results = {}
     tic = time.perf_counter()
     
@@ -112,8 +90,8 @@ def save_results(params,results):
     
     for key in results:
         mu , comsize, name = key
-        #f.write(str(mu)+ ","+ str(comsize) + ","+ str(name))
-        f.write(str(mu)+ ","+ str(comsize+31) + ","+ str(name))
+        f.write(str(mu)+ ","+ str(comsize) + ","+ str(name))
+        #f.write(str(mu)+ ","+ str(comsize+51) + ","+ str(name))
         f.write(":")
         for result in results[key]:
             f.write(str(result)+ ',')
@@ -121,20 +99,78 @@ def save_results(params,results):
     f.close()
 
 
-random.seed(5)
+random.seed(15)
 
 "Uncomment the following code and run main.py to plot our results for different values of mu."
-mus = [0.05,0.1,0.15,0.2,0.25,0.3]
-n = 200
-comsizes = [(4, 20),(6, 30),(8, 40)]
-num_runs = 10
-main(mus, comsizes, num_runs, n)
-mus, comrange,num_runs, results = read_results()
-plot_mu_results_map(mus, comrange,num_runs, results)
-plot_mu_results_mod(mus, comrange,num_runs, results)
+
+# mus = [0.05,0.1,0.15,0.2,0.25,0.3]
+# n = 200
+# comsizes = [(4, 20),(6, 30),(8, 40)]
+# num_runs = 10
+# main(mus, comsizes, num_runs, n)
+# mus, comrange,num_runs, results = read_results()
+# plot_mu_results_map(mus, comrange,num_runs, results)
+# plot_mu_results_mod(mus, comrange,num_runs, results)
+
 
 "Uncomment the following code and run main.py to run our experiment and plot the results."
-n = 500
-mus = [0.25]
-num_runs = 2 
-main(mus, comsizes, num_runs, n)
+
+# n = 500
+# mus = [0.25]
+# num_runs = 2 
+# a = 5
+# b = 25
+# c = 10
+# d = 2
+# e = 4
+# comsizes = []
+# for i in range(1,17):
+#     comsizes.append((round(i*a),round(i*b)))
+# for i in range(2,17):
+#         comsizes.append((a,i*b))
+# for i in range(1, 6):
+#     comsizes.append((a+i*c, b+i*c))
+# for i in range(1,8):
+#     comsizes.append((a+i*d, b+i*d))
+# for i in range(1,8):
+#     comsizes.append((a, b+i*e))
+
+"Uncomment the following code to run the experiment"
+# main(mus, comsizes, num_runs, n)
+
+mus, comrange,num_runs, results = read_results()
+
+# get data for scatter plot
+x,y = plot_scatter_data(mus, comrange,num_runs, results)
+x = np.array(x).reshape((-1,1))
+y = np.array(y)
+
+# start regression
+model = LinearRegression().fit(x, y)
+r_sq = model.score(x, y)
+print(f"coefficient of determination: {r_sq}")
+print(f"intercept: {model.intercept_}")
+print(f"slope: {model.coef_}")
+
+X2 = sm.add_constant(x)
+est = sm.OLS(y, X2)
+est2 = est.fit()
+print(est2.summary())
+
+def regressie(x, intercept, coef):
+    return x*coef+intercept
+
+# make scatter plot, including regression
+plt.scatter(x, y)
+plt.plot(x, regressie(x,model.intercept_, model.coef_[0]), color = 'r', label='y='+str(round(model.coef_[0],5))+'x+'+str(round(model.intercept_,5)))
+plt.xlabel('Number of small communities')
+plt.ylabel('NMI(mod)-NMI(map)')  
+plt.ylim(-0.3,0.3)
+plt.legend()
+plt.title('R-squared value: '+str(round(r_sq,5)))
+plt.savefig('plot'+'_num_small_'+'regressie'+str(mus[-1])+'.png') 
+plt.show() 
+
+# make plots for modularity and map equation seperately
+y1 = plot_mod_or_map(mus, comrange,num_runs, 'map', results)
+y2 = plot_mod_or_map(mus, comrange,num_runs, 'mod', results)
