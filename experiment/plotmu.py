@@ -82,10 +82,6 @@ def plot_mu_results_map(mus, comrange,num_runs, results):
     plt.ylim(0,1)
     plt.savefig('plot_mu_map.png')
     plt.show() 
-    
-# read results and make the corresponding plots
-mus, comrange,num_runs, results = read_results()
-plot_mu_results_map(mus, comrange,num_runs, results)
-plot_mu_results_mod(mus, comrange,num_runs, results)
+
             
 
