@@ -4,6 +4,7 @@ import json
 
 
 def read_results():
+    "Write your own path here to read results"
     f = open(r"c:\Users\veerl\OneDrive\Documenten\Mathematical Sciences\Network Science\git\NetworkScienceProject\experiment\results\mu_results.tex", 'r')
     #f = open('results\mu_results.tex', 'r')
     lines = f.readlines()

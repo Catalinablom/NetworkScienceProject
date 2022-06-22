@@ -36,9 +36,7 @@ def induced_graph(com_dic, graph):
 def modularity(G, communities):
     return nx_comm.modularity(G, communities)
 
-# https://networkx.org/documentation/stable/reference/generated/networkx.generators.community.LFR_benchmark_graph.html
-# exactly one of min_degree or average_degree must be specified.
-# Bedenk welke waarden we willen invullen, welke parameters realistisch zijn
+
 "Function that tries to generate an LFR benchmark graph (at most 100 times)"
 def LFR(n, t1, t2, mu, mincomsize, maxcomsize, tries): #t1, t2 >1, 0<=mu<=1
     if tries<100:

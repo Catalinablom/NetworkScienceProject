@@ -31,9 +31,9 @@ def Pe(g, G): #P(G)
 
 def H(t, g): #H(t|g)
     som = 0
-    for ge in range(max(g)+1): # over all communities of g, ervanuitgaande dat de communities van 0, c (max(g)) genummerd zijn
+    for ge in range(max(g)+1):
         som2 = 0
-        for te in range(max(t)+1): # over all communities of t, ervanuitgaande dat de communities van 0, c (max(t)) genummerd zijn
+        for te in range(max(t)+1): 
             if P(t, g, te, ge) == 0:
                 som2 += 0
             else:
@@ -43,7 +43,7 @@ def H(t, g): #H(t|g)
 
 def Ha(t): #H(t)
     som = 0
-    for i in range(max(t)+1): # over alle communities van t, ervanuitgaande dat de communities van 0, c genummerd zijn
+    for i in range(max(t)+1): 
         if Pe(t,i) == 0:
             som += 0
         else:
