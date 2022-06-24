@@ -12,7 +12,7 @@ Now, the file main.py combines all the files above and saves results (normalized
 
 After obtaining results trough the main file, one can visualise them with the file plotscatter.py. The file plotmu.py is used to determine which value of mu to use in our experiments, as can be seen in the paper.
 
-The following packages will need to be installed on your machine before you can run the experiment: networkx, sklearn and matplotlib. 
+The following packages will need to be installed on your machine before you can run the experiment: networkx, sklearn, math, statsmoments, numpy, random, copy, time, ast and matplotlib. 
 
 Note that the path to the folder results must be changed to your path on your machine to properly save and load results. This must be done in main.py, plotscatter.py and plotmu.py.
 
