@@ -14,7 +14,11 @@ After obtaining results trough the main file, one can visualise them with the fi
 
 The following packages will need to be installed on your machine before you can run the experiment: networkx, sklearn and matplotlib. 
 
-Note that the path to the folder results must be changed to your path on your machine to properly save and load results. This must be done in main.py, plotscatter.py, plotmu.py and plotresults.py
+Note that the path to the folder results must be changed to your path on your machine to properly save and load results. This must be done in main.py, plotscatter.py, plotmu.py and plotresults.py.
+
+
+
+In the main.py file you can find more information on how to replicate our results exactly. 
 
 
 

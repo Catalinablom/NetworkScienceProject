@@ -102,41 +102,42 @@ def save_results(params,results):
 random.seed(15)
 
 "Uncomment the following code and run main.py to plot our results for different values of mu."
-''''
-mus = [0.05,0.1,0.15,0.2,0.25,0.3]
-n = 200
-comsizes = [(4, 20),(6, 30),(8, 40)]
-num_runs = 10
-main(mus, comsizes, num_runs, n)
-mus, comrange,num_runs, results = read_results()
-plot_mu_results_map(mus, comrange,num_runs, results)
-plot_mu_results_mod(mus, comrange,num_runs, results)
-'''
+
+# mus = [0.05,0.1,0.15,0.2,0.25,0.3]
+# n = 200
+# comsizes = [(4, 20),(6, 30),(8, 40)]
+# num_runs = 10
+# main(mus, comsizes, num_runs, n)
+# mus, comrange,num_runs, results = read_results()
+# plot_mu_results_map(mus, comrange,num_runs, results)
+# plot_mu_results_mod(mus, comrange,num_runs, results)
+
 
 "Uncomment the following code and run main.py to run our experiment and plot the results."
-'''
-n = 500
-mus = [0.25]
-num_runs = 2 
-a = 5
-b = 25
-c = 10
-d = 2
-e = 4
-comsizes = []
-for i in range(1,17):
-    comsizes.append((round(i*a),round(i*b)))
-for i in range(2,17):
-        comsizes.append((a,i*b))
-for i in range(1, 6):
-    comsizes.append((a+i*c, b+i*c))
-for i in range(1,8):
-    comsizes.append((a+i*d, b+i*d))
-for i in range(1,8):
-    comsizes.append((a, b+i*e))
 
-main(mus, comsizes, num_runs, n)
-'''
+# n = 500
+# mus = [0.25]
+# num_runs = 2 
+# a = 5
+# b = 25
+# c = 10
+# d = 2
+# e = 4
+# comsizes = []
+# for i in range(1,17):
+#     comsizes.append((round(i*a),round(i*b)))
+# for i in range(2,17):
+#         comsizes.append((a,i*b))
+# for i in range(1, 6):
+#     comsizes.append((a+i*c, b+i*c))
+# for i in range(1,8):
+#     comsizes.append((a+i*d, b+i*d))
+# for i in range(1,8):
+#     comsizes.append((a, b+i*e))
+
+"Uncomment the following code to run the experiment"
+# main(mus, comsizes, num_runs, n)
+
 mus, comrange,num_runs, results = read_results()
 
 # get data for scatter plot
