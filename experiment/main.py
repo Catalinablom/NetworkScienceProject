@@ -171,5 +171,8 @@ plt.savefig('plot'+'_num_small_'+'regressie'+str(mus[-1])+'.png')
 plt.show() 
 
 # make plots for modularity and map equation seperately
-y1 = plot_mod_or_map(mus, comrange,num_runs, 'map', results)
-y2 = plot_mod_or_map(mus, comrange,num_runs, 'mod', results)
+y_zero_mean, y_mean = plot_mod_or_map(mus, comrange,num_runs, 'map', results)
+y_zero_mean2, y_mean2 = plot_mod_or_map(mus, comrange,num_runs, 'mod', results)
+
+print('map:',y_zero_mean, y_mean)
+print('mod:',y_zero_mean2, y_mean2)

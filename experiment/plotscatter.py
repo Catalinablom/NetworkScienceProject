@@ -78,4 +78,4 @@ def plot_mod_or_map(mus, comrange,num_runs, measure, results):
     plt.ylim(0,1)
     plt.savefig('plot'+'_scatter_'+measure+str(mu)+'.png')
     plt.show()
-    return y_zero
+    return (sum(y_zero)/len(y_zero)), (sum(y)/len(y))
